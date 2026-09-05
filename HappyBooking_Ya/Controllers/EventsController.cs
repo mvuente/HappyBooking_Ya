@@ -48,8 +48,7 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
         [Produces("application/json")]
-        //[HttpGet("{id: int}")]
-        [HttpGet("{id}")] //test
+        [HttpGet("{id}")]
         public ApiBaseResult Get(int id)
         {
             var eventFound = _eventService.GetEvent(id);
@@ -83,8 +82,7 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status201Created)]
         [Consumes("application/json")]
-        //[HttpPost("{event: Event}")] //test
-        [HttpPost("{event}")]
+        [HttpPost("{newEventDTO}")]
         public ApiBaseResult Create([FromBody] EventDTO newEventDTO)
         {
             if (!ModelState.IsValid)
@@ -115,8 +113,7 @@
         /// <returns> JSON струткура с деталями ответа </returns>
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status204NoContent)]
-        //[HttpPut("{id: int}, {updatedEventDTO: EventDTO}")]
-        [HttpPut("{id}, {updatedEventDTO}")] //test
+        [HttpPut("{id}")]
         public ApiBaseResult Put(int id, [FromBody] EventDTO updatedEventDTO)
         {
             if (!ModelState.IsValid || id < 0)
@@ -156,8 +153,7 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <returns> JSON струткура с деталями ответа </returns>
-        //[HttpDelete("{id: int}")]
-        [HttpDelete("{id}")] //test
+        [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
         public ApiBaseResult Delete(int id)
