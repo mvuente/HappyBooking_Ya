@@ -6,7 +6,9 @@
 
         public Event GetEvent(int id)
         {
-            return repoInMemory.Find(r => r.Id == id); // проверка на NULL
+            var EventFound = repoInMemory.Find(r => r.Id == id);
+
+            return EventFound.CloneEvent(EventFound); // не валидирую, так как в контроллере есть обработка exception
         }
 
         public List<Event> GetAllEvents()
@@ -14,9 +16,9 @@
             return repoInMemory.Select(e => e.CloneEvent(e)).ToList();
         }
 
-        public void DeleteEvent(int id) //void, тк возможно повтороный запрос с тем же id
+        public int DeleteEvent(int id) //void, тк возможно повтороный запрос с тем же id
         {
-            repoInMemory.RemoveAll(r => r.Id == id);
+            return repoInMemory.RemoveAll(r => r.Id == id);
         }
 
         public Event CreateEvent(EventDTO eventDTO)
@@ -40,7 +42,7 @@
                 eventToUpdate.EndAt         = eventDTO.EndAt;
             }
             
-            return eventToUpdate; // проверка на NULL
+            return eventToUpdate; 
         }
     }
 }

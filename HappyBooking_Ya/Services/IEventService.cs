@@ -6,6 +6,6 @@
         public List<Event> GetAllEvents();
         public Event CreateEvent(EventDTO eventDTO);
         public Event ReplaceEvent(int id, EventDTO eventDTO);
-        public void DeleteEvent(int id);
+        public int DeleteEvent(int id);
     }
 }

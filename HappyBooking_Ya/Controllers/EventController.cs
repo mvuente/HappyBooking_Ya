@@ -5,54 +5,127 @@ namespace HappyBooking_Ya.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EventController : ControllerBase
+    public class EventController(IEventService _eventService) : ControllerBase
     {
-        private readonly IEventService _eventService;
-
-        public EventController(IEventService eventService)
-        {
-            _eventService = eventService;
-        }
+        private readonly IEventService? _eventService;
 
         [HttpGet]
-        public void Get()
+        public ApiResult<List<Event>> Get()
         {
-            
+            return new ApiResult<List<Event>>
+            {
+                Data        = _eventService.GetAllEvents(),
+                Success     = true,
+                StatusCode  = HttpStatusCode.OK,
+                Message     = "Получаем все события из коллекции" //а если список пуст?
+            };
         }
 
         [HttpGet("{id: int}")]
-        public void Get(int id)
+        public ApiBaseResult Get(int id)
         {
-            
+            try 
+            {
+                return new ApiResult<Event>
+                {
+                    Data        = _eventService.GetEvent(id),
+                    Success     = true,
+                    StatusCode  = HttpStatusCode.OK,
+                    Message     = "Получаем событие по его id из коллекции"
+                };
+            }
+            catch(ArgumentOutOfRangeException ex)
+            {
+                return new ApiResult
+                {
+                    Success     = false,
+                    StatusCode  = HttpStatusCode.NotFound,
+                    Message     = $"Не удалось найти событие по id или id некорректный: {ex.Message}"
+                };
+            }
         }
 
         [HttpPost("{event: Event}")] //проверить правильность пути
-        public IActionResult Create([FromBody] EventDTO newEventDTO)
+        public ApiBaseResult Create([FromBody] EventDTO newEventDTO)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new ApiResult
+                {
+                    Success     = false,
+                    StatusCode  = HttpStatusCode.BadRequest,
+                    Message     = "Некорректные параметры события"
+                };
             }
 
             var createdEvent = _eventService.CreateEvent(newEventDTO);
 
-            return CreatedAtAction(nameof(Create), new { id = createdEvent.Id }, createdEvent);
+            return new ApiResult
+            {
+                Success     = true,
+                StatusCode  = HttpStatusCode.Created,
+                Message     = "Добавлено новое событие в коллекцию и возвращен HTTP 201 Created"
+            };
         }
 
         [HttpPut("{id: int}, {updatedEventDTO: EventDTO}")]
-        public IActionResult Put(int id, [FromBody] EventDTO updatedEventDTO)
+        public ApiBaseResult Put(int id, [FromBody] EventDTO updatedEventDTO)
         {
-            
-                return BadRequest(ModelState);
-            
+            if (!ModelState.IsValid || id < 0)
+            {
+                return new ApiResult
+                {
+                    Success     = false,
+                    StatusCode  = HttpStatusCode.BadRequest,
+                    Message = "Неверные данные; HTTP 400 Bad Request"
+                };
+            }
 
+            var eventReplaced = _eventService.ReplaceEvent(id, updatedEventDTO);
 
+            if (eventReplaced != null)
+            {
+                return new ApiResult
+                {
+                    Success = true,
+                    StatusCode = HttpStatusCode.NoContent,
+                    Message = "Меняем данные события по id и возвращаем HTTP 204 No Content"
+                };
+            }
+            else
+            {
+                return new ApiResult
+                {
+                    Success     = false,
+                    StatusCode  = HttpStatusCode.NotFound,
+                    Message     = "id некорректный"
+                };
+            }
         }
 
         [HttpDelete("{id: int}")]
-        public void Delete(int id)
+        public ApiBaseResult Delete(int id)
         {
-            
+            try
+            {
+                _eventService.DeleteEvent(id);
+                
+                return new ApiResult
+                {
+                    Success     = true,
+                    StatusCode  = HttpStatusCode.NoContent,
+                    Message     = "Удалено событие с id и возвращен HTTP 204 No Content"
+                };            
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                return new ApiResult
+                {
+                    Success     = false,
+                    StatusCode  = HttpStatusCode.NotFound,
+                    Message     = $"id некорректный: {ex.Message}"
+                };             
+            }
         }
     }
 }
