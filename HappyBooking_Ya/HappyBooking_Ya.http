@@ -1,0 +1,6 @@
+@HappyBooking_Ya_HostAddress = http://localhost:5064
+
+GET {{HappyBooking_Ya_HostAddress}}
+Accept: application/json
+
+###
