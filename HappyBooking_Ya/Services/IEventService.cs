@@ -4,8 +4,8 @@
     {
         public Event GetEvent(int id);
         public List<Event> GetAllEvents();
-        public Event CreateEvent(string title, string description, DateTime startAt, DateTime endAt);
-        public Event ReplaceEvent(int id, string title, string description, DateTime startAt, DateTime endAt);
+        public Event CreateEvent(EventDTO eventDTO);
+        public Event ReplaceEvent(int id, EventDTO eventDTO);
         public void DeleteEvent(int id);
     }
 }

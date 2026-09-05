@@ -19,25 +19,25 @@
             repoInMemory.RemoveAll(r => r.Id == id);
         }
 
-        public Event CreateEvent(string title, string description, DateTime startAt, DateTime endAt)
+        public Event CreateEvent(EventDTO eventDTO)
         {
-            var newId = repoInMemory.Count() + 1;
-            var newEvent = new Event(newId, title, description, startAt, endAt);
+            var newId = repoInMemory.Count() + 1; //переписать логику получения id
+            var newEvent = new Event(newId, eventDTO.Title, eventDTO.Description, eventDTO.StartAt, eventDTO.EndAt);
             repoInMemory.Add(newEvent);
 
-            return newEvent; // проверка на NULL
+            return newEvent; 
         }
 
-        public Event ReplaceEvent(int id, string title, string description, DateTime startAt, DateTime endAt)
+        public Event ReplaceEvent(int id, EventDTO eventDTO)
         {
             var eventToUpdate = repoInMemory.Find(r => r.Id == id);
 
             if (eventToUpdate != null)
             {
-                eventToUpdate.Title         = title;
-                eventToUpdate.Description   = description;
-                eventToUpdate.StartAt       = startAt;
-                eventToUpdate.EndAt         = endAt;
+                eventToUpdate.Title         = eventDTO.Title;
+                eventToUpdate.Description   = eventDTO.Description;
+                eventToUpdate.StartAt       = eventDTO.StartAt;
+                eventToUpdate.EndAt         = eventDTO.EndAt;
             }
             
             return eventToUpdate; // проверка на NULL

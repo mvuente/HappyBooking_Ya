@@ -3,6 +3,8 @@ using System.Net;
 
 namespace HappyBooking_Ya.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -24,19 +26,27 @@ namespace HappyBooking_Ya.Controllers
             
         }
 
-        [HttpPost("{event: Event}")]
-        public IActionResult Create([FromBody] Event newEvent)
+        [HttpPost("{event: Event}")] //проверить правильность пути
+        public IActionResult Create([FromBody] EventDTO newEventDTO)
         {
-            var createdEvent = _eventService.CreateEvent(newEvent);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            //return createdEvent? Ok(createdEvent.Id) : 
-            return Ok(createdEvent.id);
+            var createdEvent = _eventService.CreateEvent(newEventDTO);
+
+            return CreatedAtAction(nameof(Create), new { id = createdEvent.Id }, createdEvent);
         }
 
-        [HttpPut("{id: int}, {updatedEvent: Event}")]
-        public void Put(int id, [FromBody] Event updatedEvent)
+        [HttpPut("{id: int}, {updatedEventDTO: EventDTO}")]
+        public IActionResult Put(int id, [FromBody] EventDTO updatedEventDTO)
         {
             
+                return BadRequest(ModelState);
+            
+
+
         }
 
         [HttpDelete("{id: int}")]
