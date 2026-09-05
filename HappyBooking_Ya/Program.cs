@@ -8,8 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-//builder.Services.AddOpenApi();
-//builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -21,15 +21,14 @@ builder.Services.AddFluentValidationAutoValidation()       //Подключен 
                .AddFluentValidationClientsideAdapters()
                .AddValidatorsFromAssembly(typeof(Program).Assembly);
 
-builder.Services.AddSingleton<IEventService, BasicEventService>(); //подключил сервис работы с событиями
+builder.Services.AddSingleton<IEventService, BasicEventService>(); //Singleton, тк используется коллекция событий in memory
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.MapOpenApi();
+    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
