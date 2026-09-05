@@ -8,7 +8,8 @@
         /// <summary>
         /// Коллекция событий
         /// </summary>
-        private List<Event> repoInMemory = new List<Event>();
+        //private List<Event> repoInMemory = new List<Event>(); //test
+        public static List<Event> repoInMemory { get; set; } = [];
 
         /// <summary>
         /// Коллекция освобожденных идентификаторов (начинаются с 1) коллекции событий, пригодных для повторного использования

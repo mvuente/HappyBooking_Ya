@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
-
-namespace HappyBooking_Ya.Controllers
+﻿namespace HappyBooking_Ya.Controllers
 {
     /// <summary>
     /// Класс контроллер приложения
@@ -9,12 +6,22 @@ namespace HappyBooking_Ya.Controllers
     /// <param name="_eventService"> Экземпляр класса сервиса приложения </param>
     [ApiController]
     [Route("api/[controller]")]
-    public class EventsController(IEventService _eventService) : ControllerBase
+    public class EventsController : ControllerBase
     {
         /// <summary>
         /// Экземпляр класса сервиса приложения
         /// </summary>
         private readonly IEventService? _eventService;
+
+        /// <summary>
+        /// Конструктор контроллера
+        /// </summary>
+        /// <param name="eventService"> Экземпляр класса сервиса приложения </param>
+        public EventsController(IEventService eventService)
+        {
+            _eventService = eventService;
+        }
+
         /// <summary>
         /// Метод, возвращающий все события, имеющиеся в коллекции
         /// </summary>
@@ -41,8 +48,8 @@ namespace HappyBooking_Ya.Controllers
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
         [Produces("application/json")]
-
-        [HttpGet("{id: int}")]
+        //[HttpGet("{id: int}")]
+        [HttpGet("{id}")] //test
         public ApiBaseResult Get(int id)
         {
             try 
@@ -74,7 +81,8 @@ namespace HappyBooking_Ya.Controllers
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status201Created)]
         [Consumes("application/json")]
-        [HttpPost("{event: Event}")]
+        //[HttpPost("{event: Event}")] //test
+        [HttpPost("{event}")]
         public ApiBaseResult Create([FromBody] EventDTO newEventDTO)
         {
             if (!ModelState.IsValid)
@@ -105,7 +113,8 @@ namespace HappyBooking_Ya.Controllers
         /// <returns> JSON струткура с деталями ответа </returns>
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status204NoContent)]
-        [HttpPut("{id: int}, {updatedEventDTO: EventDTO}")]
+        //[HttpPut("{id: int}, {updatedEventDTO: EventDTO}")]
+        [HttpPut("{id}, {updatedEventDTO}")] //test
         public ApiBaseResult Put(int id, [FromBody] EventDTO updatedEventDTO)
         {
             if (!ModelState.IsValid || id < 0)
@@ -145,7 +154,8 @@ namespace HappyBooking_Ya.Controllers
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <returns> JSON струткура с деталями ответа </returns>
-        [HttpDelete("{id: int}")]
+        //[HttpDelete("{id: int}")]
+        [HttpDelete("{id}")] //test
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
         public ApiBaseResult Delete(int id)
