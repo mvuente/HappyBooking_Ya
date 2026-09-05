@@ -42,7 +42,15 @@
         {
             var EventFound = repoInMemory.Find(r => r.Id == id);
 
-            return EventFound.CloneEvent(EventFound); // не валидирую, так как в контроллере есть обработка exception
+            if (EventFound != null)
+            {
+                return EventFound.CloneEvent(EventFound);
+            }
+            else
+            {
+                return EventFound;
+            }
+            
         }
 
         /// <summary>

@@ -52,23 +52,25 @@
         [HttpGet("{id}")] //test
         public ApiBaseResult Get(int id)
         {
-            try 
+            var eventFound = _eventService.GetEvent(id);
+
+            if (eventFound != null)
             {
                 return new ApiResult<Event>
                 {
-                    Data        = _eventService.GetEvent(id),
+                    Data        = eventFound,
                     Success     = true,
                     StatusCode  = HttpStatusCode.OK,
                     Message     = "Получаем событие по его id из коллекции"
                 };
             }
-            catch(ArgumentOutOfRangeException ex)
+            else
             {
                 return new ApiResult
                 {
                     Success     = false,
                     StatusCode  = HttpStatusCode.NotFound,
-                    Message     = $"Не удалось найти событие по id или id некорректный: {ex.Message}"
+                    Message     = "Не удалось найти событие по id или id некорректный"
                 };
             }
         }
