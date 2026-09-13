@@ -12,6 +12,9 @@
         public required T Data { get; set; }
     }
 
+    /// <summary>
+    /// Реализация класса для структурирования ответов контроллера
+    /// </summary>
     public class ApiResult : ApiBaseResult { }
 
     public class ApiBaseResult
