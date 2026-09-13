@@ -1,5 +1,4 @@
-﻿using Microsoft.OpenApi.MicrosoftExtensions;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HappyBooking_Ya.Util
 {

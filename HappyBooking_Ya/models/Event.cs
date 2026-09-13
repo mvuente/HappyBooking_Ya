@@ -41,26 +41,26 @@ namespace HappyBooking_Ya.models
         /// <param name="startAt"> Дата и время начала события </param>
         /// <param name="endAt"> Дата и время окончания события </param>
         [SetsRequiredMembers]
-        public Event(int id, string title, string description, DateTime startAt, DateTime endAt) 
+        public Event(int id, string title, string description, DateTime startAt, DateTime endAt)
         {
-            Id          = id;
-            Title       = title;
+            Id = id;
+            Title = title;
             Description = description ?? string.Empty;
-            StartAt     = startAt;
-            EndAt       = endAt;
-        } 
+            StartAt = startAt;
+            EndAt = endAt;
+        }
 
         /// <summary>
         /// Конструктор копирования
         /// </summary>
         /// <param name="OrigEvent"> Исходный экземпляр класса </param>
-        public Event(Event OrigEvent) 
+        public Event(Event OrigEvent)
         {
-            Id          = OrigEvent.Id;
-            Title       = OrigEvent.Title;
+            Id = OrigEvent.Id;
+            Title = OrigEvent.Title;
             Description = OrigEvent.Description ?? string.Empty;
-            StartAt     = OrigEvent.StartAt;
-            EndAt       = OrigEvent.EndAt;
+            StartAt = OrigEvent.StartAt;
+            EndAt = OrigEvent.EndAt;
         }
 
         /// <summary>
@@ -69,6 +69,6 @@ namespace HappyBooking_Ya.models
         /// <param name="origEvent"> Исходный экземпляр класса </param>
         /// <returns> Копия экземпляра класса </returns>
         public Event CloneEvent(Event origEvent) => new Event(origEvent.Id, origEvent.Title, origEvent.Description, origEvent.StartAt, origEvent.EndAt);
-        
+
     }
 }

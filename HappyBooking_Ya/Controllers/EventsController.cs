@@ -3,7 +3,6 @@
     /// <summary>
     /// Класс контроллер приложения
     /// </summary>
-    /// <param name="_eventService"> Экземпляр класса сервиса приложения </param>
     [ApiController]
     [Route("api/[controller]")]
     public class EventsController : ControllerBase
@@ -33,10 +32,10 @@
         {
             return new ApiResult<List<Event>>
             {
-                Data        = _eventService.GetAllEvents(),
-                Success     = true,
-                StatusCode  = HttpStatusCode.OK,
-                Message     = "Получаем все события из коллекции" 
+                Data = _eventService.GetAllEvents(),
+                Success = true,
+                StatusCode = HttpStatusCode.OK,
+                Message = "Получаем все события из коллекции"
             };
         }
 
@@ -49,28 +48,28 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
         [Produces("application/json")]
         [HttpGet("{id}")]
-        public ApiBaseResult Get(int id)
+        public ActionResult<ApiResult<Event>> Get(int id)
         {
             var eventFound = _eventService.GetEvent(id);
 
             if (eventFound != null)
             {
-                return new ApiResult<Event>
+                return new OkObjectResult(new ApiResult<Event>
                 {
-                    Data        = eventFound,
-                    Success     = true,
-                    StatusCode  = HttpStatusCode.OK,
-                    Message     = "Получаем событие по его id из коллекции"
-                };
+                    Data = eventFound,
+                    Success = true,
+                    StatusCode = HttpStatusCode.OK,
+                    Message = "Получаем событие по его id из коллекции"
+                });
             }
             else
             {
-                return new ApiResult
+                return new BadRequestObjectResult(new ApiResult
                 {
-                    Success     = false,
-                    StatusCode  = HttpStatusCode.NotFound,
-                    Message     = "Не удалось найти событие по id или id некорректный"
-                };
+                    Success = false,
+                    StatusCode = HttpStatusCode.BadRequest,
+                    Message = "Не удалось найти событие по id или id некорректный"
+                });
             }
         }
 
@@ -82,31 +81,23 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status201Created)]
         [Consumes("application/json")]
-        [HttpPost("{newEventDTO}")]
-        public ApiBaseResult Create([FromBody] EventDTO newEventDTO)
+        [HttpPost]
+        public ActionResult<ApiBaseResult> Create([FromBody] EventDTO newEventDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return new ApiResult
-                {
-                    Success     = false,
-                    StatusCode  = HttpStatusCode.BadRequest,
-                    Message     = "Некорректные параметры события"
-                };
-            }
-
             var createdEvent = _eventService.CreateEvent(newEventDTO);
+            var createdEventLocation = Url.Action(nameof(Get), new { id = createdEvent.Id }) ??
+                                        throw new InvalidOperationException("Не удалось сформировать адрес события");
 
-            return new ApiResult
+            return new CreatedResult(createdEventLocation, new ApiResult
             {
-                Success     = true,
-                StatusCode  = HttpStatusCode.Created,
-                Message     = "Добавлено новое событие в коллекцию и возвращен HTTP 201 Created"
-            };
+                Success = true,
+                StatusCode = HttpStatusCode.Created,
+                Message = "Добавлено новое событие в коллекцию и возвращен HTTP 201 Created"
+            });
         }
 
         /// <summary>
-        /// Метод заменяет параметры событяи в коллекции данными, передаваемыми в запросе
+        /// Метод заменяет параметры события в коллекции данными, передаваемыми в запросе
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <param name="updatedEventDTO"> Экземпляр класса с параметрами события с валидируемыми параметрами события </param>
@@ -114,37 +105,22 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status204NoContent)]
         [HttpPut("{id}")]
-        public ApiBaseResult Put(int id, [FromBody] EventDTO updatedEventDTO)
+        public ActionResult<ApiBaseResult> Put(int id, [FromBody] EventDTO updatedEventDTO)
         {
-            if (!ModelState.IsValid || id < 0)
-            {
-                return new ApiResult
-                {
-                    Success     = false,
-                    StatusCode  = HttpStatusCode.BadRequest,
-                    Message     = "Неверные данные; HTTP 400 Bad Request"
-                };
-            }
-
             var eventReplaced = _eventService.ReplaceEvent(id, updatedEventDTO);
 
             if (eventReplaced != null)
             {
-                return new ApiResult
-                {
-                    Success     = true,
-                    StatusCode  = HttpStatusCode.NoContent,
-                    Message     = "Меняем данные события по id и возвращаем HTTP 204 No Content"
-                };
+                return new NoContentResult();
             }
             else
             {
-                return new ApiResult
+                return new NotFoundObjectResult(new ApiResult
                 {
-                    Success     = false,
-                    StatusCode  = HttpStatusCode.NotFound,
-                    Message     = "id некорректный"
-                };
+                    Success = false,
+                    StatusCode = HttpStatusCode.NotFound,
+                    Message = "id некорректный"
+                });
             }
         }
 
@@ -156,28 +132,10 @@
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
-        public ApiBaseResult Delete(int id)
-        {
-            try
-            {
+        public ActionResult<ApiBaseResult> Delete(int id)
+        {    
                 _eventService.DeleteEvent(id);
-                
-                return new ApiResult
-                {
-                    Success     = true,
-                    StatusCode  = HttpStatusCode.NoContent,
-                    Message     = "Удалено событие с id и возвращен HTTP 204 No Content"
-                };            
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                return new ApiResult
-                {
-                    Success     = false,
-                    StatusCode  = HttpStatusCode.NotFound,
-                    Message     = $"id некорректный: {ex.Message}"
-                };             
-            }
+                return new NoContentResult();       
         }
     }
 }

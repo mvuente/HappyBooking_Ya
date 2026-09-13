@@ -22,7 +22,7 @@
         /// Дата начала события
         /// </summary>
         [Required(ErrorMessage = "Дата начала события обязательно для заполнения.")]
-        [CurrentDateRange]   
+        [CurrentDateRange]
         public required DateTime StartAt { get; set; }
 
         /// <summary>
