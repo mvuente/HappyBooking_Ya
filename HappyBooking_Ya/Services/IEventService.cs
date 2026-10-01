@@ -30,8 +30,7 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <param name="eventDTO"> экземпляр класса с параметрами события </param>
-        /// <returns> обновленный экземпляр класса события </returns>
-        public Event ReplaceEvent(int id, EventDTO eventDTO);
+        public void ReplaceEvent(int id, EventDTO eventDTO);
 
         /// <summary>
         /// Объявление метода, выполняющего DELETE запрос

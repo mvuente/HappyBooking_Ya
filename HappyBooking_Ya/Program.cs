@@ -26,6 +26,8 @@ builder.Services.AddSingleton<IEventService, BasicEventService>(); //Singleton, 
 
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionsHandlingMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

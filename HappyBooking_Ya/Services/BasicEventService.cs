@@ -41,15 +41,12 @@
         {
             var EventFound = repoInMemory.Find(r => r.Id == id);
 
-            if (EventFound != null)
+            if (EventFound == null)
             {
-                return EventFound.CloneEvent(EventFound);
+                throw new NotFoundException("событие", id);
             }
-            else
-            {
-                return EventFound;
-            }
-
+            
+            return EventFound.CloneEvent(EventFound);
         }
 
         /// <summary>
@@ -98,20 +95,19 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <param name="eventDTO"> экземпляр класса с параметрами события </param>
-        /// <returns> обновленный экземпляр класса события </returns>
-        public Event ReplaceEvent(int id, EventDTO eventDTO)
+        public void ReplaceEvent(int id, EventDTO eventDTO)
         {
             var eventToUpdate = repoInMemory.Find(r => r.Id == id);
 
-            if (eventToUpdate != null)
+            if (eventToUpdate == null)
             {
-                eventToUpdate.Title = eventDTO.Title;
-                eventToUpdate.Description = eventDTO.Description;
-                eventToUpdate.StartAt = eventDTO.StartAt;
-                eventToUpdate.EndAt = eventDTO.EndAt;
+                throw new NotFoundException("событие", id);
             }
-
-            return eventToUpdate;
+            
+            eventToUpdate.Title = eventDTO.Title;
+            eventToUpdate.Description = eventDTO.Description;
+            eventToUpdate.StartAt = eventDTO.StartAt;
+            eventToUpdate.EndAt = eventDTO.EndAt;
         }
     }
 }

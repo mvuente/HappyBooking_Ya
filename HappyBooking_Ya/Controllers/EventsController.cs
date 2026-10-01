@@ -51,26 +51,14 @@
         public ActionResult<ApiResult<Event>> Get(int id)
         {
             var eventFound = _eventService.GetEvent(id);
-
-            if (eventFound != null)
+     
+            return new OkObjectResult(new ApiResult<Event>
             {
-                return new OkObjectResult(new ApiResult<Event>
-                {
-                    Data = eventFound,
-                    Success = true,
-                    StatusCode = HttpStatusCode.OK,
-                    Message = "Получаем событие по его id из коллекции"
-                });
-            }
-            else
-            {
-                return new BadRequestObjectResult(new ApiResult
-                {
-                    Success = false,
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Message = "Не удалось найти событие по id или id некорректный"
-                });
-            }
+                Data = eventFound,
+                Success = true,
+                StatusCode = HttpStatusCode.OK,
+                Message = "Получаем событие по его id из коллекции"
+            });      
         }
 
         /// <summary>
@@ -107,21 +95,9 @@
         [HttpPut("{id}")]
         public ActionResult<ApiBaseResult> Put(int id, [FromBody] EventDTO updatedEventDTO)
         {
-            var eventReplaced = _eventService.ReplaceEvent(id, updatedEventDTO);
-
-            if (eventReplaced != null)
-            {
-                return new NoContentResult();
-            }
-            else
-            {
-                return new NotFoundObjectResult(new ApiResult
-                {
-                    Success = false,
-                    StatusCode = HttpStatusCode.NotFound,
-                    Message = "id некорректный"
-                });
-            }
+            _eventService.ReplaceEvent(id, updatedEventDTO);
+      
+            return new NoContentResult();      
         }
 
         /// <summary>
