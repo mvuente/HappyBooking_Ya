@@ -18,11 +18,15 @@
         /// <param name="title"> Параметр фильтра по названию события </param>
         /// <param name="from"> Параметр фильтра по дате начала периода </param>
         /// <param name="to"> Параметр фильтра по дате окончания периода </param>
-        /// <returns> Коллекция экземпляров класса события  </returns>
-        public List<Event> GetAllEvents(
+        /// <param name="page"> Номер страницы возвращаемого массива </param>
+        /// <param name="pageSize"> Размер страницы возвращаемого массива </param>
+        /// <returns> Постраничный массив событий </returns>
+        public PaginatedResult GetAllEvents(
             string? title = null,
             DateTime? from = null, 
-            DateTime? to = null);
+            DateTime? to = null,
+            int page = 1,
+            int pageSize = 10);
 
         /// <summary>
         /// Объявление метода, выполняющего POST запрос

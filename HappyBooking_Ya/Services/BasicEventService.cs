@@ -55,30 +55,41 @@
         /// <param name="title"> Параметр фильтра по названию события </param>
         /// <param name="from"> Параметр фильтра по дате начала периода </param>
         /// <param name="to"> Параметр фильтра по дате окончания периода </param>
-        /// <returns> Коллекция экземпляров класса события </returns>
-        public List<Event> GetAllEvents(
+        /// <param name="page"> Номер страницы возвращаемого массива </param>
+        /// <param name="pageSize"> Размер страницы возвращаемого массива </param>
+        /// <returns> Постраничный массив событий </returns>
+        public PaginatedResult GetAllEvents(
             string? title = null,
             DateTime? from = null,
-            DateTime? to = null)
+            DateTime? to = null,
+            int page = 1,
+            int pageSize = 10)
         {
-            var events = repoInMemory.Select(e => e.CloneEvent(e)).ToList();
+            IEnumerable<Event> query = repoInMemory; 
 
-            if (title != null)
+            if (!string.IsNullOrEmpty(title))
             {
-                events = events.Where(e => e.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList();
+                query = query.Where(q => q.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
             }
 
-            if (from != null)
+            if (from.HasValue)
             {
-                events = events.Where(e => from <= e.StartAt).ToList();
+                query = query.Where(q => from <= q.StartAt);
             }
 
-            if (to != null)
+            if (to.HasValue)
             {
-                events = events.Where(e => e.EndAt <= to).ToList();
+                query = query.Where(q => q.EndAt <= to);
             }
 
-            return events;
+            var count = query.Count();
+
+            var events = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PaginatedResult(count, events, page, events.Count());
         }
 
         /// <summary>

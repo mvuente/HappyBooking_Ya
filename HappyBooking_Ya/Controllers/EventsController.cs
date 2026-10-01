@@ -27,21 +27,25 @@
         /// <param name="title"> Параметр фильтра по названию события </param>
         /// <param name="from"> Параметр фильтра по дате начала периода </param>
         /// <param name="to"> Параметр фильтра по дате окончания периода </param>
-        /// <returns> Коллекция событий </returns>
+        /// <param name="page"> Номер страницы возвращаемого массива </param>
+        /// <param name="pageSize"> Размер страницы возвращаемого массива </param>
+        /// <returns> Постраничный массив событий </returns>
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status200OK)]
         [Produces("application/json")]
         [HttpGet]
-        public ApiResult<List<Event>> Get(
+        public ApiResult<PaginatedResult> Get(
             [FromQuery] string? title = null,
             [FromQuery] DateTime? from = null,
-            [FromQuery] DateTime? to = null)
+            [FromQuery] DateTime? to = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            return new ApiResult<List<Event>>
+            return new ApiResult<PaginatedResult>
             {
-                Data = _eventService.GetAllEvents(title, from, to),
+                Data = _eventService.GetAllEvents(title, from, to, page, pageSize),
                 Success = true,
                 StatusCode = HttpStatusCode.OK,
-                Message = "Получаем все события из коллекции"
+                Message = "Получаем события из коллекции в соответствии с параметрами запроса"
             };
         }
 
