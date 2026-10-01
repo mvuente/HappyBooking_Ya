@@ -52,10 +52,33 @@
         /// <summary>
         /// Реализация метода, выполняющего GET запрос
         /// </summary>
-        /// <returns> Коллекция экземпляров класса события  </returns>
-        public List<Event> GetAllEvents()
+        /// <param name="title"> Параметр фильтра по названию события </param>
+        /// <param name="from"> Параметр фильтра по дате начала периода </param>
+        /// <param name="to"> Параметр фильтра по дате окончания периода </param>
+        /// <returns> Коллекция экземпляров класса события </returns>
+        public List<Event> GetAllEvents(
+            string? title = null,
+            DateTime? from = null,
+            DateTime? to = null)
         {
-            return repoInMemory.Select(e => e.CloneEvent(e)).ToList();
+            var events = repoInMemory.Select(e => e.CloneEvent(e)).ToList();
+
+            if (title != null)
+            {
+                events = events.Where(e => e.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (from != null)
+            {
+                events = events.Where(e => from <= e.StartAt).ToList();
+            }
+
+            if (to != null)
+            {
+                events = events.Where(e => e.EndAt <= to).ToList();
+            }
+
+            return events;
         }
 
         /// <summary>

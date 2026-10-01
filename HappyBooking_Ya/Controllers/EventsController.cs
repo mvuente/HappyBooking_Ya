@@ -24,15 +24,21 @@
         /// <summary>
         /// Метод, возвращающий все события, имеющиеся в коллекции
         /// </summary>
+        /// <param name="title"> Параметр фильтра по названию события </param>
+        /// <param name="from"> Параметр фильтра по дате начала периода </param>
+        /// <param name="to"> Параметр фильтра по дате окончания периода </param>
         /// <returns> Коллекция событий </returns>
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status200OK)]
         [Produces("application/json")]
         [HttpGet]
-        public ApiResult<List<Event>> Get()
+        public ApiResult<List<Event>> Get(
+            [FromQuery] string? title = null,
+            [FromQuery] DateTime? from = null,
+            [FromQuery] DateTime? to = null)
         {
             return new ApiResult<List<Event>>
             {
-                Data = _eventService.GetAllEvents(),
+                Data = _eventService.GetAllEvents(title, from, to),
                 Success = true,
                 StatusCode = HttpStatusCode.OK,
                 Message = "Получаем все события из коллекции"
