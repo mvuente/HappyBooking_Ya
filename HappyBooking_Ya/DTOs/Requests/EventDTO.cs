@@ -31,5 +31,6 @@
         [Required(ErrorMessage = "Дата окончания события обязательно для заполнения.")]
         [CurrentDateRange]
         public required DateTime EndAt { get; set; }
+
     }
 }

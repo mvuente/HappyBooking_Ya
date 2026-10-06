@@ -58,11 +58,11 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
         [Produces("application/json")]
         [HttpGet("{id}")]
-        public ActionResult<ApiResult<Event>> Get(int id)
+        public ActionResult<ApiResult<EventResponse>> Get(int id)
         {
             var eventFound = _eventService.GetEvent(id);
      
-            return new OkObjectResult(new ApiResult<Event>
+            return new OkObjectResult(new ApiResult<EventResponse>
             {
                 Data = eventFound,
                 Success = true,

@@ -1,6 +1,0 @@
-@HappyBooking_Ya.Tests_HostAddress = http://localhost:5102
-
-GET {{HappyBooking_Ya.Tests_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
