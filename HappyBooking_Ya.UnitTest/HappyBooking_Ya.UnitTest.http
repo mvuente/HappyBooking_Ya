@@ -1,0 +1,6 @@
+@HappyBooking_Ya.UnitTest_HostAddress = http://localhost:5167
+
+GET {{HappyBooking_Ya.UnitTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

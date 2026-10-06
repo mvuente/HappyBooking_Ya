@@ -1,4 +1,5 @@
 ﻿global using HappyBooking_Ya.Services;
+global using HappyBooking_Ya.Data;
 global using HappyBooking_Ya.models;
 global using HappyBooking_Ya.DTOs;
 global using HappyBooking_Ya.Exceptions;

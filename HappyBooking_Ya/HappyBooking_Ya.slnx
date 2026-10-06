@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../HappyBooking_Ya.UnitTest/HappyBooking_Ya.UnitTest.csproj" Id="5fec6478-bf7a-4db5-976f-83f20d5e46e7" />
   <Project Path="HappyBooking_Ya.csproj" />
 </Solution>

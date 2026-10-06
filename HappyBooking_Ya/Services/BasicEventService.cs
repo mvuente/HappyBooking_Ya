@@ -3,50 +3,39 @@
     /// <summary>
     /// Реализация интерфейса сервиса приложения для случая общего события и хранения in memory
     /// </summary>
-    public class BasicEventService : IEventService
+    public class BasicEventService : UtilEventService, IEventService
     {
         /// <summary>
         /// Коллекция событий
         /// </summary>
-        private readonly List<Event> repoInMemory = new List<Event>();
+        private readonly List<Event> repoInMemory = new List<Event>(); //заменить на репозиторий
+        private readonly IEventRepository eventRepository;
 
-        /// <summary>
-        /// Коллекция освобожденных идентификаторов (начинаются с 1) коллекции событий, пригодных для повторного использования
-        /// </summary>
-        private List<int> freeIndexes = new List<int>();
-
-        /// <summary>
-        /// Метод проверяет наличие высвободившихся идентификаторов и возвращает первый имеющийся 
-        /// </summary>
-        /// <returns> идентификатор события </returns>
-        private int getFreeIndex()
+        public BasicEventService(IEventRepository _eventRepository)
         {
-            int freeIndex = -1;
-
-            if (freeIndexes.Count() != 0)
-            {
-                freeIndex = freeIndexes[0];
-                freeIndexes.RemoveAt(0);
-            }
-
-            return freeIndex;
+            eventRepository = _eventRepository;
         }
 
         /// <summary>
         /// Реализация метода, выполняющего GET запрос
         /// </summary>
         /// <param name="id"> идентификатор события </param>
-        /// <returns> Экземпляр класса события с заданным id </returns>
-        public Event GetEvent(int id)
+        /// <returns> Неизменяемый экземпляр события с заданным id </returns>
+        public EventResponse GetEvent(int id)
         {
-            var EventFound = repoInMemory.Find(r => r.Id == id);
+            var EventFound = eventRepository.GetEventById(id);
 
             if (EventFound == null)
             {
                 throw new NotFoundException("событие", id);
             }
-            
-            return EventFound.CloneEvent(EventFound);
+
+            return new EventResponse(
+                EventFound.Id,
+                EventFound.Title,
+                EventFound.Description,
+                EventFound.StartAt,
+                EventFound.EndAt);
         }
 
         /// <summary>
@@ -65,29 +54,9 @@
             int page = 1,
             int pageSize = 10)
         {
-            IEnumerable<Event> query = repoInMemory; 
+            validatePageParameters(page, pageSize);
 
-            if (!string.IsNullOrEmpty(title))
-            {
-                query = query.Where(q => q.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (from.HasValue)
-            {
-                query = query.Where(q => from <= q.StartAt);
-            }
-
-            if (to.HasValue)
-            {
-                query = query.Where(q => q.EndAt <= to);
-            }
-
-            var count = query.Count();
-
-            var events = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            var (events, count) = eventRepository.GetEvents(title, from, to, page, pageSize);
 
             return new PaginatedResult(count, events, page, events.Count());
         }
@@ -99,14 +68,7 @@
         /// <returns> численный результат операции </returns>
         public int DeleteEvent(int id)
         {
-            var removeResult = repoInMemory.RemoveAll(r => r.Id == id);
-
-            if (removeResult > 0)
-            {
-                freeIndexes.Add(id);
-            }
-
-            return removeResult;
+            return eventRepository.DeleteEvent(id);
         }
 
         /// <summary>
@@ -116,12 +78,7 @@
         /// <returns> экземпляр созданного класса события </returns>
         public Event CreateEvent(EventDTO eventDTO)
         {
-            var localIndex = getFreeIndex();
-            var newId = localIndex < 0 ? repoInMemory.Count() + 1 : localIndex;
-            var newEvent = new Event(newId, eventDTO.Title, eventDTO.Description, eventDTO.StartAt, eventDTO.EndAt);
-            repoInMemory.Add(newEvent);
-
-            return newEvent;
+            return eventRepository.CreateEvent(eventDTO);
         }
 
         /// <summary>
@@ -131,7 +88,7 @@
         /// <param name="eventDTO"> экземпляр класса с параметрами события </param>
         public void ReplaceEvent(int id, EventDTO eventDTO)
         {
-            var eventToUpdate = repoInMemory.Find(r => r.Id == id);
+            var eventToUpdate = eventRepository.GetEventById(id);
 
             if (eventToUpdate == null)
             {
@@ -142,6 +99,8 @@
             eventToUpdate.Description = eventDTO.Description;
             eventToUpdate.StartAt = eventDTO.StartAt;
             eventToUpdate.EndAt = eventDTO.EndAt;
+
+            eventRepository.SaveChanges();
         }
     }
 }

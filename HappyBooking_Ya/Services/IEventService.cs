@@ -9,8 +9,8 @@
         /// Объявление метода, выполняющего GET запрос
         /// </summary>
         /// <param name="id"> идентификатор события </param>
-        /// <returns> Экземпляр класса события с заданным id </returns>
-        public Event GetEvent(int id);
+        /// <returns> Неизменяемый экземпляр события с заданным id </returns>
+        public EventResponse GetEvent(int id);
 
         /// <summary>
         /// Объявление метода, выполняющего GET запрос
