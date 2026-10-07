@@ -4,12 +4,7 @@
     {
         public Event GetEventById(int id);
 
-        public (List<Event>, int) GetEvents(
-            string? title,
-            DateTime? from,
-            DateTime? to,
-            int skip,
-            int take);
+        public IEnumerable<Event> GetEvents();
 
         public Event CreateEvent(EventDTO eventDTO);
 

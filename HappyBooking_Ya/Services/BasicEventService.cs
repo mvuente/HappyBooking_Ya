@@ -55,8 +55,19 @@
             int pageSize = 10)
         {
             validatePageParameters(page, pageSize);
+            
+            var query = eventRepository.GetEvents();
+            EventFilter filter = new EventFilter();
+            query = filter.filterByTitle(query, title);
+            query = filter.filterByStart(query, from);
+            query = filter.filterByEnd(query, to);
 
-            var (events, count) = eventRepository.GetEvents(title, from, to, page, pageSize);
+            var count = query.Count();
+
+            var events = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             return new PaginatedResult(count, events, page, events.Count());
         }

@@ -31,38 +31,11 @@
             return repoInMemory.FirstOrDefault(r => r.Id == id);
         }
 
-        public (List<Event>, int) GetEvents(
-            string? title,
-            DateTime? from,
-            DateTime? to,
-            int skip,
-            int take)
+        public IEnumerable<Event> GetEvents()
         {
             IEnumerable<Event> query = repoInMemory;
 
-            if (!string.IsNullOrEmpty(title))
-            {
-                query = query.Where(q => q.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (from.HasValue)
-            {
-                query = query.Where(q => from <= q.StartAt);
-            }
-
-            if (to.HasValue)
-            {
-                query = query.Where(q => q.EndAt <= to);
-            }
-
-            var count = query.Count();
-
-            var events = query
-                .Skip((skip - 1) * take)
-                .Take(take)
-                .ToList();
-
-            return (events, count);
+            return query;
         }
 
         /// <summary>
