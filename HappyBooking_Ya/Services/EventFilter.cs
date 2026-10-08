@@ -1,4 +1,6 @@
-﻿namespace HappyBooking_Ya.Services
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace HappyBooking_Ya.Services
 {
     public class EventFilter
     {
@@ -36,6 +38,13 @@
             }
 
             return result;
+        }
+
+        public IEnumerable<Event> paginateEvents(IEnumerable<Event> events, int skip, int take)
+        {
+            return events
+                .Skip((skip - 1) * take)
+                .Take(take);
         }
     }
 }

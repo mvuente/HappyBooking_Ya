@@ -8,12 +8,14 @@ namespace HappyBooking_Ya.Test
         public void Test1()
         {
             var serviceTest = new EventServiceTest();
-            //serviceTest.prepareObjects();
             serviceTest.getEventByIdTest();
             serviceTest.getAllEventsTest();
             serviceTest.createEventTest();
             serviceTest.deleteEventTest();
             serviceTest.replaceEventTest();
+            serviceTest.filterTitleEventTest();
+            serviceTest.filterStartDateEventTest();
+            serviceTest.filterEndDateEventTest();
         }
     }
 }

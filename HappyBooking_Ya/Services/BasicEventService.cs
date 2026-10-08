@@ -63,11 +63,7 @@
             query = filter.filterByEnd(query, to);
 
             var count = query.Count();
-
-            var events = query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+            var events = filter.paginateEvents(query, page, pageSize).ToList();
 
             return new PaginatedResult(count, events, page, events.Count());
         }

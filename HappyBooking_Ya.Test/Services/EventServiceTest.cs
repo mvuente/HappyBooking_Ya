@@ -13,18 +13,24 @@ namespace HappyBooking_Ya.UnitTest.Services
         private List<Event> Events;
         private Mock<IEventRepository> MockRepository;
         private BasicEventService EventService;
+        private readonly EventFilter Filter;
         private DateTime Start1;
         private DateTime Start2;
+        private DateTime Start3;
         private DateTime End1;
         private DateTime End2;
+        private DateTime End3;
         public EventServiceTest()
         {
             MockRepository = new Mock<IEventRepository>();
             EventService = new BasicEventService(MockRepository.Object);
+            Filter = new EventFilter();
             Start1 = DateTime.UtcNow.AddDays(1);
             Start2 = DateTime.UtcNow.AddDays(2);
+            Start3 = DateTime.UtcNow.AddDays(4);
             End1 = DateTime.UtcNow.AddDays(3);
             End2 = DateTime.UtcNow.AddDays(4);
+            End3 = DateTime.UtcNow.AddDays(6); 
 
             Events = new List<Event>
                 {
@@ -34,10 +40,15 @@ namespace HappyBooking_Ya.UnitTest.Services
                         Start1,
                         End1),
                     new (2,
-                        "Cont",
+                        "Constant",
                         "Второе",
                         Start2,
-                        End2)
+                        End2),
+                    new (3,
+                        "Finish",
+                        "Последнее",
+                        Start3,
+                        End3)
                 };
         }
         public void getEventByIdTest()
@@ -53,16 +64,14 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal(End1, result.EndAt);
         }
         public void getAllEventsTest()
-        {
-            int count = 2;           
-
-            MockRepository.Setup(method => method.GetEvents(null, null, null, 1, 10)).Returns((Events, count));
+        {          
+            MockRepository.Setup(method => method.GetEvents()).Returns(Events);
 
             var pagedResult = EventService.GetAllEvents();
 
-            Assert.Equal(2, pagedResult.TotalEventsNumber);
+            Assert.Equal(3, pagedResult.TotalEventsNumber);
             Assert.Equal("Start", pagedResult.Events.First().Title);
-            Assert.Equal("Cont", pagedResult.Events.Last().Title);
+            Assert.Equal("Finish", pagedResult.Events.Last().Title);
         }
 
         public void createEventTest()
@@ -114,7 +123,7 @@ namespace HappyBooking_Ya.UnitTest.Services
 
             Event foundEvent = new Event(
                 2,
-                "Cont",
+                "Constant",
                 "Второе",
                 Start2,
                 End2);
@@ -125,6 +134,66 @@ namespace HappyBooking_Ya.UnitTest.Services
             MockRepository.Verify(repo => repo.GetEventById(2), Times.Once);
             Assert.Equal("updatedEvent", foundEvent.Title);
             Assert.Equal("CreatedFromTest", foundEvent.Description);    
+        }
+
+        public void filterTitleEventTest()
+        {
+            var expectedResult = new List<string> { "Start", "Constant" };
+            var notExpectedResult = "Finish";
+            var stringExist = "ta";
+            var stringDoesntExist = "gost";
+            string? emptyTitle = null;
+
+            var result = Filter.filterByTitle(Events, stringExist).ToList(); 
+
+            Assert.All(expectedResult, title => Assert.Contains(result, r => r.Title == title));
+            Assert.DoesNotContain(notExpectedResult, result.Select(Event => Event.Title));
+
+            result = Filter.filterByTitle(Events, stringDoesntExist).ToList();
+            Assert.Empty(result);
+
+            result = Filter.filterByTitle(Events, emptyTitle).ToList();
+            Assert.Equal(3, result.Count());
+        }
+
+        public void filterStartDateEventTest()
+        {
+            var notExpectedResult = new List<DateTime> { Start1, Start2 };
+            var expectedResult = new List<DateTime>  { Start3 };
+            var dateForCorrectRequest = DateTime.UtcNow.AddDays(3);
+            var dateForUncorrectRequest = DateTime.UtcNow.AddDays(10);
+            DateTime? emptyDate = null;
+
+            var result = Filter.filterByStart(Events, dateForCorrectRequest).ToList();
+
+            Assert.All(expectedResult, startAt => Assert.Contains(result, r => r.StartAt == startAt));
+            Assert.All(notExpectedResult, startAt => Assert.DoesNotContain(result, r => r.StartAt == startAt));
+
+            result = Filter.filterByStart(Events, dateForUncorrectRequest).ToList();
+            Assert.Empty(result);
+
+            result = Filter.filterByStart(Events, emptyDate).ToList();
+            Assert.Equal(3, result.Count());
+        }
+
+        public void filterEndDateEventTest()
+        {
+            var expectedResult = new List<DateTime> { Start1, Start2 };
+            var notExpectedResult = new List<DateTime> { Start3 };
+            var dateForCorrectRequest = DateTime.UtcNow.AddDays(5);
+            var dateForUncorrectRequest = DateTime.UtcNow.AddDays(1);
+            DateTime? emptyDate = null;
+
+            var result = Filter.filterByEnd(Events, dateForCorrectRequest).ToList();
+
+            Assert.All(expectedResult, startAt => Assert.Contains(result, r => r.StartAt == startAt));
+            Assert.All(notExpectedResult, startAt => Assert.DoesNotContain(result, r => r.StartAt == startAt));
+
+            result = Filter.filterByEnd(Events, dateForUncorrectRequest).ToList();
+            Assert.Empty(result);
+
+            result = Filter.filterByEnd(Events, emptyDate).ToList();
+            Assert.Equal(3, result.Count());
         }
     }
 }
