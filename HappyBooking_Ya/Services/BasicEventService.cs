@@ -8,7 +8,6 @@
         /// <summary>
         /// Коллекция событий
         /// </summary>
-        private readonly List<Event> repoInMemory = new List<Event>(); 
         private readonly IEventRepository eventRepository;
 
         public BasicEventService(IEventRepository _eventRepository)

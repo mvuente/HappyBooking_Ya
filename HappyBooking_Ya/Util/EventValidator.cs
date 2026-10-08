@@ -1,7 +1,7 @@
 ﻿namespace HappyBooking_Ya.Util
 {
     /// <summary>
-    /// Класс валидации параметров события
+    /// Класс валидации параметров события. Часть Fluent validation. Выполняется до запуска контроллера
     /// </summary>
     public class EventValidator : AbstractValidator<EventDTO>
     {

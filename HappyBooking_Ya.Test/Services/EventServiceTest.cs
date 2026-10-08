@@ -1,5 +1,6 @@
 ﻿using HappyBooking_Ya.Data;
 using HappyBooking_Ya.DTOs;
+using HappyBooking_Ya.Exceptions;
 using HappyBooking_Ya.models;
 using HappyBooking_Ya.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -13,6 +14,7 @@ namespace HappyBooking_Ya.UnitTest.Services
         private List<Event> Events;
         private Mock<IEventRepository> MockRepository;
         private BasicEventService EventService;
+        private EventDTO RequestUpdate;
         private readonly EventFilter Filter;
         private DateTime Start1;
         private DateTime Start2;
@@ -50,6 +52,14 @@ namespace HappyBooking_Ya.UnitTest.Services
                         Start3,
                         End3)
                 };
+
+            RequestUpdate = new EventDTO
+            {
+                Title = "updatedEvent",
+                Description = "CreatedFromTest",
+                StartAt = Start2,
+                EndAt = End2
+            };
         }
         public void getEventByIdTest()
         {
@@ -106,21 +116,14 @@ namespace HappyBooking_Ya.UnitTest.Services
             MockRepository.Setup(method => method.DeleteEvent(1)).Returns(1);
 
             var methodResult = EventService.DeleteEvent(1);
+            var expectedResult = 1;
 
-            Assert.Equal(methodResult, 1);
+            Assert.Equal(expectedResult, methodResult);
             MockRepository.Verify(repo => repo.DeleteEvent(1), Times.Once);
         }
 
         public void replaceEventTest()
         {
-            EventDTO requestUpdate = new EventDTO
-            {
-                Title = "updatedEvent",
-                Description = "CreatedFromTest",
-                StartAt = Start2,
-                EndAt = End2
-            };
-
             Event foundEvent = new Event(
                 2,
                 "Constant",
@@ -129,7 +132,7 @@ namespace HappyBooking_Ya.UnitTest.Services
                 End2);
 
             MockRepository.Setup(method => method.GetEventById(2)).Returns(foundEvent);
-            EventService.ReplaceEvent(2, requestUpdate);
+            EventService.ReplaceEvent(2, RequestUpdate);
   
             MockRepository.Verify(repo => repo.GetEventById(2), Times.Once);
             Assert.Equal("updatedEvent", foundEvent.Title);
@@ -205,7 +208,7 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal("Constant", result.Last().Title);
 
             result = Filter.paginateEvents(Events, 2, 2);
-            Assert.Equal(1, result.Count());
+            Assert.Single(result);
 
             result = Filter.paginateEvents(Events, 2, 4);
             Assert.Empty(result);
@@ -219,7 +222,26 @@ namespace HappyBooking_Ya.UnitTest.Services
 
             Assert.Equal(1, pagedResult.TotalEventsNumber);
             Assert.Equal("Start", pagedResult.Events.First().Title);
-            //Assert.Equal("Finish", pagedResult.Events.Last().Title);
+        }
+
+        public void incorrectIdExceptionTest()
+        {
+            var exception = Assert.Throws<NotFoundException>(() => EventService.GetEvent(5));
+
+            Assert.Equal("событие с ID 5 не найден", exception.Message);
+        }
+
+        public void incorrectIdUpdateExceptionTest()
+        {
+            var exception = Assert.Throws<NotFoundException>(() => EventService.ReplaceEvent(5, RequestUpdate));
+
+            Assert.Equal("событие с ID 5 не найден", exception.Message);
+        }
+
+        public void invalidPageParamsExceptionTest()
+        {            
+            var exception = Assert.Throws<FluentValidation.ValidationException>(() => EventService.GetAllEvents(null, null, null, 0, 10));
+            exception = Assert.Throws<FluentValidation.ValidationException>(() => EventService.GetAllEvents(null, null, null, 1, -10));
         }
     }
 }

@@ -18,6 +18,9 @@ namespace HappyBooking_Ya.Test
             serviceTest.filterEndDateEventTest();
             serviceTest.pageEventTest();
             serviceTest.getAllEventsFilteredTest();
+            serviceTest.incorrectIdExceptionTest();
+            serviceTest.incorrectIdUpdateExceptionTest();
+            serviceTest.invalidPageParamsExceptionTest();
         }
     }
 }

@@ -22,6 +22,7 @@ builder.Services.AddFluentValidationAutoValidation()       //Подключен 
                .AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 builder.Services.AddSingleton<IEventService, BasicEventService>(); //Singleton, тк используется коллекция событий in memory
+builder.Services.AddSingleton<IEventRepository, InMemoryEventRepository>();
 
 
 var app = builder.Build();
