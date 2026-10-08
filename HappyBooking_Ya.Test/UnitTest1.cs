@@ -16,6 +16,8 @@ namespace HappyBooking_Ya.Test
             serviceTest.filterTitleEventTest();
             serviceTest.filterStartDateEventTest();
             serviceTest.filterEndDateEventTest();
+            serviceTest.pageEventTest();
+            serviceTest.getAllEventsFilteredTest();
         }
     }
 }

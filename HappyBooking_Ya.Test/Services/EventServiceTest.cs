@@ -178,22 +178,48 @@ namespace HappyBooking_Ya.UnitTest.Services
 
         public void filterEndDateEventTest()
         {
-            var expectedResult = new List<DateTime> { Start1, Start2 };
-            var notExpectedResult = new List<DateTime> { Start3 };
+            var expectedResult = new List<DateTime> { End1, End2 };
+            var notExpectedResult = new List<DateTime> { End3 };
             var dateForCorrectRequest = DateTime.UtcNow.AddDays(5);
             var dateForUncorrectRequest = DateTime.UtcNow.AddDays(1);
             DateTime? emptyDate = null;
 
             var result = Filter.filterByEnd(Events, dateForCorrectRequest).ToList();
 
-            Assert.All(expectedResult, startAt => Assert.Contains(result, r => r.StartAt == startAt));
-            Assert.All(notExpectedResult, startAt => Assert.DoesNotContain(result, r => r.StartAt == startAt));
+            Assert.All(expectedResult, endAt => Assert.Contains(result, r => r.EndAt == endAt));
+            Assert.All(notExpectedResult, endAt => Assert.DoesNotContain(result, r => r.EndAt == endAt));
 
             result = Filter.filterByEnd(Events, dateForUncorrectRequest).ToList();
             Assert.Empty(result);
 
             result = Filter.filterByEnd(Events, emptyDate).ToList();
             Assert.Equal(3, result.Count());
+        }
+
+        public void pageEventTest()
+        {
+            var result = Filter.paginateEvents(Events, 1, 2);
+
+            Assert.Equal(2, result.Count());
+            Assert.Equal("Start", result.First().Title);
+            Assert.Equal("Constant", result.Last().Title);
+
+            result = Filter.paginateEvents(Events, 2, 2);
+            Assert.Equal(1, result.Count());
+
+            result = Filter.paginateEvents(Events, 2, 4);
+            Assert.Empty(result);
+        }
+
+        public void getAllEventsFilteredTest()
+        {
+            MockRepository.Setup(method => method.GetEvents()).Returns(Events);
+
+            var pagedResult = EventService.GetAllEvents("ta", null, DateTime.UtcNow.AddDays(3), 1, 1);
+
+            Assert.Equal(1, pagedResult.TotalEventsNumber);
+            Assert.Equal("Start", pagedResult.Events.First().Title);
+            //Assert.Equal("Finish", pagedResult.Events.Last().Title);
         }
     }
 }
