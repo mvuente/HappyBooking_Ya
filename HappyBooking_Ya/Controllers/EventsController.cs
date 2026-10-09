@@ -60,6 +60,7 @@
         [HttpGet("{id}")]
         public ActionResult<ApiResult<EventResponse>> Get(int id)
         {
+           // throw new NotFoundException("событие", id); //test
             var eventFound = _eventService.GetEvent(id);
      
             return new OkObjectResult(new ApiResult<EventResponse>
