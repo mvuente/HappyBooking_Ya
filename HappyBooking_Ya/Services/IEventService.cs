@@ -9,14 +9,24 @@
         /// Объявление метода, выполняющего GET запрос
         /// </summary>
         /// <param name="id"> идентификатор события </param>
-        /// <returns> Экземпляр класса события с заданным id </returns>
-        public Event GetEvent(int id);
+        /// <returns> Неизменяемый экземпляр события с заданным id </returns>
+        public EventResponse GetEvent(int id);
 
         /// <summary>
         /// Объявление метода, выполняющего GET запрос
         /// </summary>
-        /// <returns> Коллекция экземпляров класса события  </returns>
-        public List<Event> GetAllEvents();
+        /// <param name="title"> Параметр фильтра по названию события </param>
+        /// <param name="from"> Параметр фильтра по дате начала периода </param>
+        /// <param name="to"> Параметр фильтра по дате окончания периода </param>
+        /// <param name="page"> Номер страницы возвращаемого массива </param>
+        /// <param name="pageSize"> Размер страницы возвращаемого массива </param>
+        /// <returns> Постраничный массив событий </returns>
+        public PaginatedResult GetAllEvents(
+            string? title = null,
+            DateTime? from = null, 
+            DateTime? to = null,
+            int page = 1,
+            int pageSize = 10);
 
         /// <summary>
         /// Объявление метода, выполняющего POST запрос
@@ -30,8 +40,7 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <param name="eventDTO"> экземпляр класса с параметрами события </param>
-        /// <returns> обновленный экземпляр класса события </returns>
-        public Event ReplaceEvent(int id, EventDTO eventDTO);
+        public void ReplaceEvent(int id, EventDTO eventDTO);
 
         /// <summary>
         /// Объявление метода, выполняющего DELETE запрос

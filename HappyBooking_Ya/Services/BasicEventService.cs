@@ -3,62 +3,72 @@
     /// <summary>
     /// Реализация интерфейса сервиса приложения для случая общего события и хранения in memory
     /// </summary>
-    public class BasicEventService : IEventService
+    public class BasicEventService : UtilEventService, IEventService
     {
         /// <summary>
         /// Коллекция событий
         /// </summary>
-        private readonly List<Event> repoInMemory = new List<Event>();
+        private readonly IEventRepository eventRepository;
 
         /// <summary>
-        /// Коллекция освобожденных идентификаторов (начинаются с 1) коллекции событий, пригодных для повторного использования
+        /// Конструктор класса
         /// </summary>
-        private List<int> freeIndexes = new List<int>();
-
-        /// <summary>
-        /// Метод проверяет наличие высвободившихся идентификаторов и возвращает первый имеющийся 
-        /// </summary>
-        /// <returns> идентификатор события </returns>
-        private int getFreeIndex()
+        /// <param name="_eventRepository">  Экземпляр репозитория </param>
+        public BasicEventService(IEventRepository _eventRepository)
         {
-            int freeIndex = -1;
-
-            if (freeIndexes.Count() != 0)
-            {
-                freeIndex = freeIndexes[0];
-                freeIndexes.RemoveAt(0);
-            }
-
-            return freeIndex;
+            eventRepository = _eventRepository;
         }
 
         /// <summary>
         /// Реализация метода, выполняющего GET запрос
         /// </summary>
         /// <param name="id"> идентификатор события </param>
-        /// <returns> Экземпляр класса события с заданным id </returns>
-        public Event GetEvent(int id)
+        /// <returns> Неизменяемый экземпляр события с заданным id </returns>
+        public EventResponse GetEvent(int id)
         {
-            var EventFound = repoInMemory.Find(r => r.Id == id);
+            var EventFound = eventRepository.GetEventById(id);
 
-            if (EventFound != null)
+            if (EventFound == null)
             {
-                return EventFound.CloneEvent(EventFound);
-            }
-            else
-            {
-                return EventFound;
+                throw new NotFoundException("событие", id);
             }
 
+            return new EventResponse(
+                EventFound.Id,
+                EventFound.Title,
+                EventFound.Description,
+                EventFound.StartAt,
+                EventFound.EndAt);
         }
 
         /// <summary>
         /// Реализация метода, выполняющего GET запрос
         /// </summary>
-        /// <returns> Коллекция экземпляров класса события  </returns>
-        public List<Event> GetAllEvents()
+        /// <param name="title"> Параметр фильтра по названию события </param>
+        /// <param name="from"> Параметр фильтра по дате начала периода </param>
+        /// <param name="to"> Параметр фильтра по дате окончания периода </param>
+        /// <param name="page"> Номер страницы возвращаемого массива </param>
+        /// <param name="pageSize"> Размер страницы возвращаемого массива </param>
+        /// <returns> Постраничный массив событий </returns>
+        public PaginatedResult GetAllEvents(
+            string? title = null,
+            DateTime? from = null,
+            DateTime? to = null,
+            int page = 1,
+            int pageSize = 10)
         {
-            return repoInMemory.Select(e => e.CloneEvent(e)).ToList();
+            validatePageParameters(page, pageSize);
+            
+            var query = eventRepository.GetEvents();
+            EventFilter filter = new EventFilter();
+            query = filter.filterByTitle(query, title);
+            query = filter.filterByStart(query, from);
+            query = filter.filterByEnd(query, to);
+
+            var count = query.Count();
+            var events = filter.paginateEvents(query, page, pageSize).ToList();
+
+            return new PaginatedResult(count, events, page, events.Count());
         }
 
         /// <summary>
@@ -68,14 +78,7 @@
         /// <returns> численный результат операции </returns>
         public int DeleteEvent(int id)
         {
-            var removeResult = repoInMemory.RemoveAll(r => r.Id == id);
-
-            if (removeResult > 0)
-            {
-                freeIndexes.Add(id);
-            }
-
-            return removeResult;
+            return eventRepository.DeleteEvent(id);
         }
 
         /// <summary>
@@ -85,12 +88,7 @@
         /// <returns> экземпляр созданного класса события </returns>
         public Event CreateEvent(EventDTO eventDTO)
         {
-            var localIndex = getFreeIndex();
-            var newId = localIndex < 0 ? repoInMemory.Count() + 1 : localIndex;
-            var newEvent = new Event(newId, eventDTO.Title, eventDTO.Description, eventDTO.StartAt, eventDTO.EndAt);
-            repoInMemory.Add(newEvent);
-
-            return newEvent;
+            return eventRepository.CreateEvent(eventDTO);
         }
 
         /// <summary>
@@ -98,20 +96,21 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <param name="eventDTO"> экземпляр класса с параметрами события </param>
-        /// <returns> обновленный экземпляр класса события </returns>
-        public Event ReplaceEvent(int id, EventDTO eventDTO)
+        public void ReplaceEvent(int id, EventDTO eventDTO)
         {
-            var eventToUpdate = repoInMemory.Find(r => r.Id == id);
+            var eventToUpdate = eventRepository.GetEventById(id);
 
-            if (eventToUpdate != null)
+            if (eventToUpdate == null)
             {
-                eventToUpdate.Title = eventDTO.Title;
-                eventToUpdate.Description = eventDTO.Description;
-                eventToUpdate.StartAt = eventDTO.StartAt;
-                eventToUpdate.EndAt = eventDTO.EndAt;
+                throw new NotFoundException("событие", id);
             }
+            
+            eventToUpdate.Title = eventDTO.Title;
+            eventToUpdate.Description = eventDTO.Description;
+            eventToUpdate.StartAt = eventDTO.StartAt;
+            eventToUpdate.EndAt = eventDTO.EndAt;
 
-            return eventToUpdate;
+            eventRepository.SaveChanges();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace HappyBooking_Ya.models
+﻿namespace HappyBooking_Ya.DTOs
 {
     /// <summary>
     /// DTO модель события

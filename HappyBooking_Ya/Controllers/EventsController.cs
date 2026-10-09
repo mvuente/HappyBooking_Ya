@@ -24,18 +24,28 @@
         /// <summary>
         /// Метод, возвращающий все события, имеющиеся в коллекции
         /// </summary>
-        /// <returns> Коллекция событий </returns>
+        /// <param name="title"> Параметр фильтра по названию события </param>
+        /// <param name="from"> Параметр фильтра по дате начала периода </param>
+        /// <param name="to"> Параметр фильтра по дате окончания периода </param>
+        /// <param name="page"> Номер страницы возвращаемого массива </param>
+        /// <param name="pageSize"> Размер страницы возвращаемого массива </param>
+        /// <returns> Постраничный массив событий </returns>
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status200OK)]
         [Produces("application/json")]
         [HttpGet]
-        public ApiResult<List<Event>> Get()
+        public ApiResult<PaginatedResult> Get(
+            [FromQuery] string? title = null,
+            [FromQuery] DateTime? from = null,
+            [FromQuery] DateTime? to = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            return new ApiResult<List<Event>>
+            return new ApiResult<PaginatedResult>
             {
-                Data = _eventService.GetAllEvents(),
+                Data = _eventService.GetAllEvents(title, from, to, page, pageSize),
                 Success = true,
                 StatusCode = HttpStatusCode.OK,
-                Message = "Получаем все события из коллекции"
+                Message = "Получаем события из коллекции в соответствии с параметрами запроса"
             };
         }
 
@@ -48,29 +58,17 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
         [Produces("application/json")]
         [HttpGet("{id}")]
-        public ActionResult<ApiResult<Event>> Get(int id)
+        public ActionResult<ApiResult<EventResponse>> Get(int id)
         {
             var eventFound = _eventService.GetEvent(id);
-
-            if (eventFound != null)
+     
+            return new OkObjectResult(new ApiResult<EventResponse>
             {
-                return new OkObjectResult(new ApiResult<Event>
-                {
-                    Data = eventFound,
-                    Success = true,
-                    StatusCode = HttpStatusCode.OK,
-                    Message = "Получаем событие по его id из коллекции"
-                });
-            }
-            else
-            {
-                return new BadRequestObjectResult(new ApiResult
-                {
-                    Success = false,
-                    StatusCode = HttpStatusCode.BadRequest,
-                    Message = "Не удалось найти событие по id или id некорректный"
-                });
-            }
+                Data = eventFound,
+                Success = true,
+                StatusCode = HttpStatusCode.OK,
+                Message = "Получаем событие по его id из коллекции"
+            });      
         }
 
         /// <summary>
@@ -107,21 +105,9 @@
         [HttpPut("{id}")]
         public ActionResult<ApiBaseResult> Put(int id, [FromBody] EventDTO updatedEventDTO)
         {
-            var eventReplaced = _eventService.ReplaceEvent(id, updatedEventDTO);
-
-            if (eventReplaced != null)
-            {
-                return new NoContentResult();
-            }
-            else
-            {
-                return new NotFoundObjectResult(new ApiResult
-                {
-                    Success = false,
-                    StatusCode = HttpStatusCode.NotFound,
-                    Message = "id некорректный"
-                });
-            }
+            _eventService.ReplaceEvent(id, updatedEventDTO);
+      
+            return new NoContentResult();      
         }
 
         /// <summary>
