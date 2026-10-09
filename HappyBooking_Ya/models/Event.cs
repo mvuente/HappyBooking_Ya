@@ -62,13 +62,5 @@ namespace HappyBooking_Ya.models
             StartAt = OrigEvent.StartAt;
             EndAt = OrigEvent.EndAt;
         }
-
-        /// <summary>
-        /// Метод копирования класса
-        /// </summary>
-        /// <param name="origEvent"> Исходный экземпляр класса </param>
-        /// <returns> Копия экземпляра класса </returns>
-        public Event CloneEvent(Event origEvent) => new Event(origEvent.Id, origEvent.Title, origEvent.Description, origEvent.StartAt, origEvent.EndAt);
-
     }
 }

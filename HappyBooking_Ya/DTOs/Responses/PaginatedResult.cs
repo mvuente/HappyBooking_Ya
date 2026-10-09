@@ -3,14 +3,14 @@
     /// <summary>
     /// DTO для ответа на запрос get/events
     /// </summary>
-    public record PaginatedResult(
-        /// <param name="TotalEventsNumber"> Общее количество событий, отвечающих параметрам фильтрации </param>
-        int TotalEventsNumber,
-        /// <param name="Events"> Массив отфильтрованных событий </param>
+    /// <param name="TotalEventsNumber"> Общее количество событий, отвечающих параметрам фильтрации </param>
+    /// <param name="Events"> Массив отфильтрованных событий </param>
+    /// <param name="Page"> Номер страницы к выдаче </param>
+    /// <param name="PageSize"> Размер страницы </param>
+    public record PaginatedResult(      
+        int TotalEventsNumber,       
         IEnumerable<Event> Events,
-        /// <param name="Page"> Номер страницы к выдаче </param>
         int Page,
-        /// <param name="PageSize"> Размер страницы </param>
         int PageSize)
     { }
 }

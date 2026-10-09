@@ -10,6 +10,10 @@
         /// </summary>
         private readonly IEventRepository eventRepository;
 
+        /// <summary>
+        /// Конструктор класса
+        /// </summary>
+        /// <param name="_eventRepository">  Экземпляр репозитория </param>
         public BasicEventService(IEventRepository _eventRepository)
         {
             eventRepository = _eventRepository;

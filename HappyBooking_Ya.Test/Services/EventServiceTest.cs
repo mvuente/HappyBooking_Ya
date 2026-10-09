@@ -9,19 +9,69 @@ using System.Net;
 
 namespace HappyBooking_Ya.UnitTest.Services
 {
+    /// <summary>
+    /// Класс юнит-тестов
+    /// </summary>
     public class EventServiceTest
     {
+        /// <summary>
+        /// Массив событий для тестов
+        /// </summary>
         private List<Event> Events;
+
+        /// <summary>
+        /// Заглушка репозитория
+        /// </summary>
         private Mock<IEventRepository> MockRepository;
+
+        /// <summary>
+        /// Тестируемый экземпляр сервиса
+        /// </summary>
         private BasicEventService EventService;
+
+        /// <summary>
+        /// DTO с набором параметров для обновления события
+        /// </summary>
         private EventDTO RequestUpdate;
+
+        /// <summary>
+        /// Экземпляр класса, выполняющего фильтрацию
+        /// </summary>
         private readonly EventFilter Filter;
+
+        /// <summary>
+        /// Параметр тестов - дата начала события
+        /// </summary>
         private DateTime Start1;
+
+        /// <summary>
+        /// Параметр тестов - дата начала события
+        /// </summary>
         private DateTime Start2;
+
+        /// <summary>
+        /// Параметр тестов - дата начала события
+        /// </summary>
         private DateTime Start3;
+
+        /// <summary>
+        /// Параметр тестов - дата окончания события
+        /// </summary>
         private DateTime End1;
+
+        /// <summary>
+        /// Параметр тестов - дата окончания события
+        /// </summary>
         private DateTime End2;
+
+        /// <summary>
+        /// Параметр тестов - дата окончания события
+        /// </summary>
         private DateTime End3;
+
+        /// <summary>
+        /// Конструктор класса
+        /// </summary>
         public EventServiceTest()
         {
             MockRepository = new Mock<IEventRepository>();
@@ -61,6 +111,10 @@ namespace HappyBooking_Ya.UnitTest.Services
                 EndAt = End2
             };
         }
+
+        /// <summary>
+        /// Метод тестирования получения события по id
+        /// </summary>
         public void getEventByIdTest()
         {
             MockRepository.Setup(method => method.GetEventById(1)).Returns(Events.First());
@@ -73,6 +127,10 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal(Start1, result.StartAt);
             Assert.Equal(End1, result.EndAt);
         }
+
+        /// <summary>
+        /// Метод тестирования получения всех событий
+        /// </summary>
         public void getAllEventsTest()
         {          
             MockRepository.Setup(method => method.GetEvents()).Returns(Events);
@@ -84,6 +142,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal("Finish", pagedResult.Events.Last().Title);
         }
 
+        /// <summary>
+        /// Метод тестирования создания события
+        /// </summary>
         public void createEventTest()
         {
             var startAt3 = DateTime.UtcNow.AddDays(2);
@@ -111,6 +172,9 @@ namespace HappyBooking_Ya.UnitTest.Services
 
         }
 
+        /// <summary>
+        /// Метод тестирования удаления события
+        /// </summary>
         public void deleteEventTest()
         {
             MockRepository.Setup(method => method.DeleteEvent(1)).Returns(1);
@@ -122,6 +186,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             MockRepository.Verify(repo => repo.DeleteEvent(1), Times.Once);
         }
 
+        /// <summary>
+        /// Метод тестирования обновления события
+        /// </summary>
         public void replaceEventTest()
         {
             Event foundEvent = new Event(
@@ -139,6 +206,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal("CreatedFromTest", foundEvent.Description);    
         }
 
+        /// <summary>
+        /// Метод тестирования фильтрации событий по заголовку
+        /// </summary>
         public void filterTitleEventTest()
         {
             var expectedResult = new List<string> { "Start", "Constant" };
@@ -159,6 +229,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal(3, result.Count());
         }
 
+        /// <summary>
+        /// Метод тестирования фильтрации событий по дате начала
+        /// </summary>
         public void filterStartDateEventTest()
         {
             var notExpectedResult = new List<DateTime> { Start1, Start2 };
@@ -179,6 +252,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal(3, result.Count());
         }
 
+        /// <summary>
+        /// Метод тестирования фильтрации событий по дате окончания
+        /// </summary>
         public void filterEndDateEventTest()
         {
             var expectedResult = new List<DateTime> { End1, End2 };
@@ -199,6 +275,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal(3, result.Count());
         }
 
+        /// <summary>
+        /// Метод тестирования пагинации событий 
+        /// </summary>
         public void pageEventTest()
         {
             var result = Filter.paginateEvents(Events, 1, 2);
@@ -214,6 +293,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Empty(result);
         }
 
+        /// <summary>
+        /// Метод тестирования комбинированной фильтрации событий
+        /// </summary>
         public void getAllEventsFilteredTest()
         {
             MockRepository.Setup(method => method.GetEvents()).Returns(Events);
@@ -224,6 +306,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal("Start", pagedResult.Events.First().Title);
         }
 
+        /// <summary>
+        /// Метод тестирования исключений при GET запросе с несуществующим id
+        /// </summary>
         public void incorrectIdExceptionTest()
         {
             var exception = Assert.Throws<NotFoundException>(() => EventService.GetEvent(5));
@@ -231,6 +316,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal("событие с ID 5 не найден", exception.Message);
         }
 
+        /// <summary>
+        /// Метод тестирования исключений при запросе обновления с несуществующим id
+        /// </summary>
         public void incorrectIdUpdateExceptionTest()
         {
             var exception = Assert.Throws<NotFoundException>(() => EventService.ReplaceEvent(5, RequestUpdate));
@@ -238,6 +326,9 @@ namespace HappyBooking_Ya.UnitTest.Services
             Assert.Equal("событие с ID 5 не найден", exception.Message);
         }
 
+        /// <summary>
+        /// Метод тестирования исключений при запросе с некорректными параметрами пагинации
+        /// </summary>
         public void invalidPageParamsExceptionTest()
         {            
             var exception = Assert.Throws<FluentValidation.ValidationException>(() => EventService.GetAllEvents(null, null, null, 0, 10));

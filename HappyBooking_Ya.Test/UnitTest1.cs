@@ -2,8 +2,14 @@
 
 namespace HappyBooking_Ya.Test
 {
+    /// <summary>
+    /// Класс юнит-тестирвоания
+    /// </summary>
     public class UnitTest1
     {
+        /// <summary>
+        /// Основной метод тестов
+        /// </summary>
         [Fact]
         public void Test1()
         {

@@ -3,16 +3,16 @@
     /// <summary>
     /// DTO для ответа на запрос get по id
     /// </summary>
+    /// <param name="Id"> Идентификатор события </param>
+    /// <param name="Title"> Заголовок события </param>
+    /// <param name="Description"> Описание события </param>
+    /// <param name="StartAt"> Дата начала события </param>
+    /// <param name="EndAt"> Дата конца события </param>
     public record EventResponse(
-        /// <param name="Id"> Идентификатор события </param>
-        int Id,
-        /// <param name="Title"> Заголовок события </param>
-        string Title,
-        /// <param name="Description"> Описание события </param>
+        int Id,       
+        string Title,        
         string Description,
-        /// <param name="StartAt"> Дата начала события </param>
         DateTime StartAt,
-        /// <param name="EndAt"> Дата конца события </param>
         DateTime EndAt)
     {
     }
