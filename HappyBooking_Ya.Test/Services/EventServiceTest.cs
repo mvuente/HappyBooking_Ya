@@ -341,6 +341,17 @@ namespace HappyBooking_Ya.UnitTest.Services
         }
 
         /// <summary>
+        /// Метод тестирования исключений при запросе удаления с несуществующим id
+        /// </summary>
+        [Fact]
+        public void IncorrectIdDeleteExceptionTest()
+        {
+            var exception = Assert.Throws<NotFoundException>(() => EventService.DeleteEvent(10));
+
+            Assert.Equal("событие с ID 10 не найден", exception.Message);
+        }
+
+        /// <summary>
         /// Метод тестирования исключений при запросе с некорректными параметрами пагинации
         /// </summary>
         [Fact]

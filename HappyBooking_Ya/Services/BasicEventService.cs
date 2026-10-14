@@ -78,7 +78,14 @@
         /// <returns> численный результат операции </returns>
         public int DeleteEvent(int id)
         {
-            return eventRepository.DeleteEvent(id);
+            var deleteResult = eventRepository.DeleteEvent(id);
+
+            if (deleteResult == 0)
+            {
+                throw new NotFoundException("событие", id);
+            }
+
+            return deleteResult;
         }
 
         /// <summary>
