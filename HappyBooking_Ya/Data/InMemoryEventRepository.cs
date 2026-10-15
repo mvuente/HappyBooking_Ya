@@ -19,7 +19,7 @@
         /// Метод проверяет наличие высвободившихся идентификаторов и возвращает первый имеющийся 
         /// </summary>
         /// <returns> идентификатор события </returns>
-        private int getFreeIndex()
+        private int GetFreeIndex()
         {
             int freeIndex = -1;
 
@@ -37,7 +37,7 @@
         /// </summary>
         /// <param name="id">Id события</param>
         /// <returns> Экземпляр класса события </returns>
-        public Event GetEventById(int id)
+        public Event? GetEventById(int id)
         {
             return repoInMemory.FirstOrDefault(r => r.Id == id);
         }
@@ -77,7 +77,7 @@
         /// <returns> Экземпляр класса события </returns>
         public Event CreateEvent(EventDTO eventDTO)
         {
-            var localIndex = getFreeIndex();
+            var localIndex = GetFreeIndex();
             var newId = localIndex < 0 ? repoInMemory.Count() + 1 : localIndex;
             var newEvent = new Event(newId, eventDTO.Title, eventDTO.Description, eventDTO.StartAt, eventDTO.EndAt);
             repoInMemory.Add(newEvent);

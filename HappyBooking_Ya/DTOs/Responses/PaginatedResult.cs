@@ -9,7 +9,7 @@
     /// <param name="PageSize"> Размер страницы </param>
     public record PaginatedResult(      
         int TotalEventsNumber,       
-        IEnumerable<Event> Events,
+        IEnumerable<EventResponse> Events,
         int Page,
         int PageSize)
     { }

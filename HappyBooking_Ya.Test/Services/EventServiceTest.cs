@@ -225,15 +225,15 @@ namespace HappyBooking_Ya.UnitTest.Services
             var stringDoesntExist = "gost";
             string? emptyTitle = null;
 
-            var result = Filter.filterByTitle(Events, stringExist).ToList(); 
+            var result = Filter.FilterByTitle(Events, stringExist).ToList(); 
 
             Assert.All(expectedResult, title => Assert.Contains(result, r => r.Title == title));
             Assert.DoesNotContain(notExpectedResult, result.Select(Event => Event.Title));
 
-            result = Filter.filterByTitle(Events, stringDoesntExist).ToList();
+            result = Filter.FilterByTitle(Events, stringDoesntExist).ToList();
             Assert.Empty(result);
 
-            result = Filter.filterByTitle(Events, emptyTitle).ToList();
+            result = Filter.FilterByTitle(Events, emptyTitle).ToList();
             Assert.Equal(3, result.Count());
         }
 
@@ -249,15 +249,15 @@ namespace HappyBooking_Ya.UnitTest.Services
             var dateForUncorrectRequest = DateTime.UtcNow.AddDays(10);
             DateTime? emptyDate = null;
 
-            var result = Filter.filterByStart(Events, dateForCorrectRequest).ToList();
+            var result = Filter.FilterByStart(Events, dateForCorrectRequest).ToList();
 
             Assert.All(expectedResult, startAt => Assert.Contains(result, r => r.StartAt == startAt));
             Assert.All(notExpectedResult, startAt => Assert.DoesNotContain(result, r => r.StartAt == startAt));
 
-            result = Filter.filterByStart(Events, dateForUncorrectRequest).ToList();
+            result = Filter.FilterByStart(Events, dateForUncorrectRequest).ToList();
             Assert.Empty(result);
 
-            result = Filter.filterByStart(Events, emptyDate).ToList();
+            result = Filter.FilterByStart(Events, emptyDate).ToList();
             Assert.Equal(3, result.Count());
         }
 
@@ -273,15 +273,15 @@ namespace HappyBooking_Ya.UnitTest.Services
             var dateForUncorrectRequest = DateTime.UtcNow.AddDays(1);
             DateTime? emptyDate = null;
 
-            var result = Filter.filterByEnd(Events, dateForCorrectRequest).ToList();
+            var result = Filter.FilterByEnd(Events, dateForCorrectRequest).ToList();
 
             Assert.All(expectedResult, endAt => Assert.Contains(result, r => r.EndAt == endAt));
             Assert.All(notExpectedResult, endAt => Assert.DoesNotContain(result, r => r.EndAt == endAt));
 
-            result = Filter.filterByEnd(Events, dateForUncorrectRequest).ToList();
+            result = Filter.FilterByEnd(Events, dateForUncorrectRequest).ToList();
             Assert.Empty(result);
 
-            result = Filter.filterByEnd(Events, emptyDate).ToList();
+            result = Filter.FilterByEnd(Events, emptyDate).ToList();
             Assert.Equal(3, result.Count());
         }
 
@@ -291,16 +291,16 @@ namespace HappyBooking_Ya.UnitTest.Services
         [Fact]
         public void PageEventTest()
         {
-            var result = Filter.paginateEvents(Events, 1, 2);
+            var result = Filter.PaginateEvents(Events, 1, 2);
 
             Assert.Equal(2, result.Count());
             Assert.Equal("Start", result.First().Title);
             Assert.Equal("Constant", result.Last().Title);
 
-            result = Filter.paginateEvents(Events, 2, 2);
+            result = Filter.PaginateEvents(Events, 2, 2);
             Assert.Single(result);
 
-            result = Filter.paginateEvents(Events, 2, 4);
+            result = Filter.PaginateEvents(Events, 2, 4);
             Assert.Empty(result);
         }
 

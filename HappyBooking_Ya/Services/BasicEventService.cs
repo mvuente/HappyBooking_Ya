@@ -57,18 +57,21 @@
             int page = 1,
             int pageSize = 10)
         {
-            validatePageParameters(page, pageSize);
+            ValidatePageParameters(page, pageSize);
             
             var query = eventRepository.GetEvents();
             EventFilter filter = new EventFilter();
-            query = filter.filterByTitle(query, title);
-            query = filter.filterByStart(query, from);
-            query = filter.filterByEnd(query, to);
+            query = filter.FilterByTitle(query, title);
+            query = filter.FilterByStart(query, from);
+            query = filter.FilterByEnd(query, to);
 
             var count = query.Count();
-            var events = filter.paginateEvents(query, page, pageSize).ToList();
+            var events = filter.PaginateEvents(query, page, pageSize).ToList();
+            var response = events
+                .Select(e => new EventResponse(e.Id, e.Title, e.Description, e.StartAt, e.EndAt))
+                .ToList();
 
-            return new PaginatedResult(count, events, page, events.Count());
+            return new PaginatedResult(count, response, page, events.Count());
         }
 
         /// <summary>

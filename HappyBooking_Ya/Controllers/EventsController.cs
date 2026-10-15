@@ -10,7 +10,7 @@
         /// <summary>
         /// Экземпляр класса сервиса приложения
         /// </summary>
-        private readonly IEventService? _eventService;
+        private readonly IEventService _eventService;
 
         /// <summary>
         /// Конструктор контроллера

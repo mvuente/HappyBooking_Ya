@@ -1,6 +1,6 @@
 # HappyBooking_Ya
-Проект HappyBooking_Ya выполнен на .Net 10, ASP.Net 8
-Для получения проекта из публичного репозитория необходимо выполнить git clone mvuente/HappyMooking_Ya
+Проект HappyBooking_Ya выполнен на .Net 10.
+Для получения проекта из публичного репозитория необходимо выполнить git clone mvuente/HappyBooking_Ya
 Использованные в проекте зависимости можно восстановить dotnet restore
 Собирается проект dotnet build
 Запускается проект dotnet run
