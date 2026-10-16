@@ -67,13 +67,27 @@
             var statusCode = MapStatusCode(ex);
 
             httpContext.Response.StatusCode = statusCode;
-            httpContext.Response.ContentType = "application/json";
+            httpContext.Response.ContentType = "application/problem+json";
 
             var error = new ProblemDetails
             {
                 Status = statusCode,
+                Title = GetTitle(ex),
                 Detail = ex.Message
             };
+
+            if (ex is NotFoundException)
+            {
+                error.Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4";
+            }
+            else if (ex is FluentValidation.ValidationException)
+            {
+                error.Type = "https://httpstatuses.com/400";
+            }
+            else
+            {
+                error.Detail = "Внутренняя ошибка сервера";
+            }
 
             await httpContext.Response.WriteAsJsonAsync(error);
         }
@@ -85,10 +99,18 @@
         /// <returns> код ошибки </returns>
         private static int MapStatusCode(Exception ex)
             => ex switch
-            {
-                FluentValidation.ValidationException ve => StatusCodes.Status400BadRequest,
-                NotFoundException nfe => StatusCodes.Status404NotFound,
-                _ => StatusCodes.Status500InternalServerError
-            };
+        {
+            FluentValidation.ValidationException ve => StatusCodes.Status400BadRequest,
+            NotFoundException nfe => StatusCodes.Status404NotFound,
+            _ => StatusCodes.Status500InternalServerError
+        };
+
+        private static string GetTitle(Exception ex) 
+            => ex switch
+        {
+            NotFoundException => "Ресурс не найден",
+            FluentValidation.ValidationException => "Ошибка валидации",
+            _ => "Внутренняя ошибка сервера"
+        };
     }
 }
