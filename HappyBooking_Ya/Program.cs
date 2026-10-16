@@ -22,9 +22,11 @@ builder.Services.AddFluentValidationAutoValidation()       //Подключен 
 builder.Services.AddSingleton<IEventService, BasicEventService>(); //Singleton, тк используется коллекция событий in memory
 builder.Services.AddSingleton<IEventRepository, InMemoryEventRepository>();
 
+//builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
+//app.UseExceptionHandler();
 app.UseMiddleware<GlobalExceptionsHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())

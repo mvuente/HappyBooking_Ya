@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="id">Id события</param>
         /// <returns> Экземпляр класса события </returns>
-        public Event GetEventById(int id);
+        public Event? GetEventById(int id);
 
         /// <summary>
         /// Метод получения массива всех событий

@@ -1,4 +1,6 @@
-﻿namespace HappyBooking_Ya.Services
+﻿using System.Drawing;
+
+namespace HappyBooking_Ya.Services
 {
     /// <summary>
     /// Абастрактный класс для общих методов сервиса
@@ -10,9 +12,11 @@
         /// </summary>
         /// <param name="page">Номер страницы вывода</param>
         /// <param name="pageSize">Количество записей на странице</param>
-        protected void validatePageParameters(int page, int pageSize)
+        protected void ValidatePageParameters(int page, int pageSize)
         {
-            if (page < 1 || pageSize < 0)
+            long skipLong = (long)(page - 1) * pageSize;
+
+            if (page < 1 || pageSize < 1 || skipLong > int.MaxValue)
             {
                 throw new FluentValidation.ValidationException("Неправильные параметры пагинации");
             }

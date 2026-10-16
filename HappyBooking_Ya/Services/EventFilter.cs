@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace HappyBooking_Ya.Services
+﻿namespace HappyBooking_Ya.Services
 {
     /// <summary>
     /// Класс, выполняющий фильтрацию
@@ -13,7 +11,7 @@ namespace HappyBooking_Ya.Services
         /// <param name="events"> Коллекция событий </param>
         /// <param name="title"> Искомый фрагмент строки заголовка </param>
         /// <returns> Отфильтрованный по параметру массив </returns>
-        public IEnumerable<Event> filterByTitle(IEnumerable<Event> events, string? title)
+        public IEnumerable<Event> FilterByTitle(IEnumerable<Event> events, string? title)
         {
             var result = events;
 
@@ -31,7 +29,7 @@ namespace HappyBooking_Ya.Services
         /// <param name="events"> Коллекция событий </param>
         /// <param name="from"> Нижняя граница даты начала </param>
         /// <returns> Отфильтрованный по параметру массив </returns>
-        public IEnumerable<Event> filterByStart(IEnumerable<Event> events, DateTime? from)
+        public IEnumerable<Event> FilterByStart(IEnumerable<Event> events, DateTime? from)
         {
             var result = events;
 
@@ -49,7 +47,7 @@ namespace HappyBooking_Ya.Services
         /// <param name="events"> Коллекция событий </param>
         /// <param name="to"> Верхняя граница даты окончания </param>
         /// <returns> Отфильтрованный по параметру массив </returns>
-        public IEnumerable<Event> filterByEnd(IEnumerable<Event> events, DateTime? to)
+        public IEnumerable<Event> FilterByEnd(IEnumerable<Event> events, DateTime? to)
         {
             var result = events;
 
@@ -68,7 +66,7 @@ namespace HappyBooking_Ya.Services
         /// <param name="skip"> Номер страницы к выдаче </param>
         /// <param name="take"> Размер страницы </param>
         /// <returns> Заданная страница выдачи </returns>
-        public IEnumerable<Event> paginateEvents(IEnumerable<Event> events, int skip, int take)
+        public IEnumerable<Event> PaginateEvents(IEnumerable<Event> events, int skip, int take)
         {
             return events
                 .Skip((skip - 1) * take)

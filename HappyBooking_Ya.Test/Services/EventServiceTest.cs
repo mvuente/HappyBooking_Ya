@@ -1,8 +1,10 @@
-﻿using HappyBooking_Ya.Data;
+﻿using FluentValidation.TestHelper;
+using HappyBooking_Ya.Data;
 using HappyBooking_Ya.DTOs;
 using HappyBooking_Ya.Exceptions;
 using HappyBooking_Ya.models;
 using HappyBooking_Ya.Services;
+using HappyBooking_Ya.Util;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Moq;
 using System.Net;
@@ -115,7 +117,8 @@ namespace HappyBooking_Ya.UnitTest.Services
         /// <summary>
         /// Метод тестирования получения события по id
         /// </summary>
-        public void getEventByIdTest()
+        [Fact]
+        public void GetEventByIdTest()
         {
             MockRepository.Setup(method => method.GetEventById(1)).Returns(Events.First());
 
@@ -131,7 +134,8 @@ namespace HappyBooking_Ya.UnitTest.Services
         /// <summary>
         /// Метод тестирования получения всех событий
         /// </summary>
-        public void getAllEventsTest()
+        [Fact]
+        public void GetAllEventsTest()
         {          
             MockRepository.Setup(method => method.GetEvents()).Returns(Events);
 
@@ -145,7 +149,8 @@ namespace HappyBooking_Ya.UnitTest.Services
         /// <summary>
         /// Метод тестирования создания события
         /// </summary>
-        public void createEventTest()
+        [Fact]
+        public void CreateEventTest()
         {
             var startAt3 = DateTime.UtcNow.AddDays(2);
             var endAt3 = DateTime.UtcNow.AddDays(4);
@@ -175,7 +180,8 @@ namespace HappyBooking_Ya.UnitTest.Services
         /// <summary>
         /// Метод тестирования удаления события
         /// </summary>
-        public void deleteEventTest()
+        [Fact]
+        public void DeleteEventTest()
         {
             MockRepository.Setup(method => method.DeleteEvent(1)).Returns(1);
 
@@ -189,7 +195,8 @@ namespace HappyBooking_Ya.UnitTest.Services
         /// <summary>
         /// Метод тестирования обновления события
         /// </summary>
-        public void replaceEventTest()
+        [Fact]
+        public void ReplaceEventTest()
         {
             Event foundEvent = new Event(
                 2,
@@ -209,7 +216,8 @@ namespace HappyBooking_Ya.UnitTest.Services
         /// <summary>
         /// Метод тестирования фильтрации событий по заголовку
         /// </summary>
-        public void filterTitleEventTest()
+        [Fact]
+        public void FilterTitleEventTest()
         {
             var expectedResult = new List<string> { "Start", "Constant" };
             var notExpectedResult = "Finish";
@@ -217,22 +225,23 @@ namespace HappyBooking_Ya.UnitTest.Services
             var stringDoesntExist = "gost";
             string? emptyTitle = null;
 
-            var result = Filter.filterByTitle(Events, stringExist).ToList(); 
+            var result = Filter.FilterByTitle(Events, stringExist).ToList(); 
 
             Assert.All(expectedResult, title => Assert.Contains(result, r => r.Title == title));
             Assert.DoesNotContain(notExpectedResult, result.Select(Event => Event.Title));
 
-            result = Filter.filterByTitle(Events, stringDoesntExist).ToList();
+            result = Filter.FilterByTitle(Events, stringDoesntExist).ToList();
             Assert.Empty(result);
 
-            result = Filter.filterByTitle(Events, emptyTitle).ToList();
+            result = Filter.FilterByTitle(Events, emptyTitle).ToList();
             Assert.Equal(3, result.Count());
         }
 
         /// <summary>
         /// Метод тестирования фильтрации событий по дате начала
         /// </summary>
-        public void filterStartDateEventTest()
+        [Fact]
+        public void FilterStartDateEventTest()
         {
             var notExpectedResult = new List<DateTime> { Start1, Start2 };
             var expectedResult = new List<DateTime>  { Start3 };
@@ -240,22 +249,23 @@ namespace HappyBooking_Ya.UnitTest.Services
             var dateForUncorrectRequest = DateTime.UtcNow.AddDays(10);
             DateTime? emptyDate = null;
 
-            var result = Filter.filterByStart(Events, dateForCorrectRequest).ToList();
+            var result = Filter.FilterByStart(Events, dateForCorrectRequest).ToList();
 
             Assert.All(expectedResult, startAt => Assert.Contains(result, r => r.StartAt == startAt));
             Assert.All(notExpectedResult, startAt => Assert.DoesNotContain(result, r => r.StartAt == startAt));
 
-            result = Filter.filterByStart(Events, dateForUncorrectRequest).ToList();
+            result = Filter.FilterByStart(Events, dateForUncorrectRequest).ToList();
             Assert.Empty(result);
 
-            result = Filter.filterByStart(Events, emptyDate).ToList();
+            result = Filter.FilterByStart(Events, emptyDate).ToList();
             Assert.Equal(3, result.Count());
         }
 
         /// <summary>
         /// Метод тестирования фильтрации событий по дате окончания
         /// </summary>
-        public void filterEndDateEventTest()
+        [Fact]
+        public void FilterEndDateEventTest()
         {
             var expectedResult = new List<DateTime> { End1, End2 };
             var notExpectedResult = new List<DateTime> { End3 };
@@ -263,40 +273,42 @@ namespace HappyBooking_Ya.UnitTest.Services
             var dateForUncorrectRequest = DateTime.UtcNow.AddDays(1);
             DateTime? emptyDate = null;
 
-            var result = Filter.filterByEnd(Events, dateForCorrectRequest).ToList();
+            var result = Filter.FilterByEnd(Events, dateForCorrectRequest).ToList();
 
             Assert.All(expectedResult, endAt => Assert.Contains(result, r => r.EndAt == endAt));
             Assert.All(notExpectedResult, endAt => Assert.DoesNotContain(result, r => r.EndAt == endAt));
 
-            result = Filter.filterByEnd(Events, dateForUncorrectRequest).ToList();
+            result = Filter.FilterByEnd(Events, dateForUncorrectRequest).ToList();
             Assert.Empty(result);
 
-            result = Filter.filterByEnd(Events, emptyDate).ToList();
+            result = Filter.FilterByEnd(Events, emptyDate).ToList();
             Assert.Equal(3, result.Count());
         }
 
         /// <summary>
         /// Метод тестирования пагинации событий 
         /// </summary>
-        public void pageEventTest()
+        [Fact]
+        public void PageEventTest()
         {
-            var result = Filter.paginateEvents(Events, 1, 2);
+            var result = Filter.PaginateEvents(Events, 1, 2);
 
             Assert.Equal(2, result.Count());
             Assert.Equal("Start", result.First().Title);
             Assert.Equal("Constant", result.Last().Title);
 
-            result = Filter.paginateEvents(Events, 2, 2);
+            result = Filter.PaginateEvents(Events, 2, 2);
             Assert.Single(result);
 
-            result = Filter.paginateEvents(Events, 2, 4);
+            result = Filter.PaginateEvents(Events, 2, 4);
             Assert.Empty(result);
         }
 
         /// <summary>
         /// Метод тестирования комбинированной фильтрации событий
         /// </summary>
-        public void getAllEventsFilteredTest()
+        [Fact]
+        public void GetAllEventsFilteredTest()
         {
             MockRepository.Setup(method => method.GetEvents()).Returns(Events);
 
@@ -309,7 +321,8 @@ namespace HappyBooking_Ya.UnitTest.Services
         /// <summary>
         /// Метод тестирования исключений при GET запросе с несуществующим id
         /// </summary>
-        public void incorrectIdExceptionTest()
+        [Fact]
+        public void IncorrectIdExceptionTest()
         {
             var exception = Assert.Throws<NotFoundException>(() => EventService.GetEvent(5));
 
@@ -319,7 +332,8 @@ namespace HappyBooking_Ya.UnitTest.Services
         /// <summary>
         /// Метод тестирования исключений при запросе обновления с несуществующим id
         /// </summary>
-        public void incorrectIdUpdateExceptionTest()
+        [Fact]
+        public void IncorrectIdUpdateExceptionTest()
         {
             var exception = Assert.Throws<NotFoundException>(() => EventService.ReplaceEvent(5, RequestUpdate));
 
@@ -327,12 +341,43 @@ namespace HappyBooking_Ya.UnitTest.Services
         }
 
         /// <summary>
+        /// Метод тестирования исключений при запросе удаления с несуществующим id
+        /// </summary>
+        [Fact]
+        public void IncorrectIdDeleteExceptionTest()
+        {
+            var exception = Assert.Throws<NotFoundException>(() => EventService.DeleteEvent(10));
+
+            Assert.Equal("событие с ID 10 не найден", exception.Message);
+        }
+
+        /// <summary>
         /// Метод тестирования исключений при запросе с некорректными параметрами пагинации
         /// </summary>
-        public void invalidPageParamsExceptionTest()
+        [Fact]
+        public void InvalidPageParamsExceptionTest()
         {            
             var exception = Assert.Throws<FluentValidation.ValidationException>(() => EventService.GetAllEvents(null, null, null, 0, 10));
             exception = Assert.Throws<FluentValidation.ValidationException>(() => EventService.GetAllEvents(null, null, null, 1, -10));
+        }
+
+        /// <summary>
+        /// Метод тестирования исключений при запросе с некорректными датами: дата начала больше даты окончания
+        /// </summary>
+        [Fact]
+        public void IncorrectStartEndDatesExceptionTests()
+        {
+            var eventDTO = new EventDTO
+            {
+                Title = "incorrectDateDTO",
+                Description = "DTO with incorrect dates",
+                StartAt = End2,
+                EndAt = Start2
+            };
+            var dateValidator = new EventValidator();
+            var result = dateValidator.TestValidate(eventDTO);
+            Assert.False(result.IsValid == true);
+            result.ShouldHaveValidationErrorFor(x => x.StartAt);   
         }
     }
 }
