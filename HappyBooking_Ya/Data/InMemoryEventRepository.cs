@@ -1,7 +1,7 @@
 ﻿namespace HappyBooking_Ya.Data
 {
     /// <summary>
-    /// Реализация интерфейса репозитория для in memory хранения
+    /// Реализация интерфейса репозитория событий для in memory хранения
     /// </summary>
     public class InMemoryEventRepository : IEventRepository
     {

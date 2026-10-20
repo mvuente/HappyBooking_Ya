@@ -21,7 +21,7 @@
         /// <summary>
         /// Создание бронирования
         /// </summary>
-        /// <param name="EventId">  Идентификатор события для бронирования </param>
+        /// <param name="EventId"> Идентификатор события для бронирования </param>
         /// <returns> Экземпляр класса бронирования </returns>
         public Booking CreateBooking(Guid EventId);
 

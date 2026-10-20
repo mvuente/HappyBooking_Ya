@@ -1,4 +1,6 @@
-﻿namespace HappyBooking_Ya.models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace HappyBooking_Ya.models
 {
     /// <summary>
     /// Класс, содержащий данные о бронировании
@@ -30,5 +32,22 @@
         /// </summary>
         public DateTime? ProcessedAt { get; set; }
 
+        /// <summary>
+        /// Базовый конструктор класса
+        /// </summary>
+        /// <param name="id"> Уникальный идентификатор брони </param>
+        /// <param name="eventId"> Идентификатор события, к которому относится бронь </param>
+        /// <param name="status"> Текущий статус брони </param>
+        /// <param name="createdAt"> Дата и время создания брони </param>
+        /// <param name="processedAt"> Дата и время обработки брони </param>
+        [SetsRequiredMembers]
+        public Booking(Guid id, Guid eventId, BookingStatus status, DateTime createdAt, DateTime? processedAt)
+        {
+            Id = id;
+            EventId = eventId;
+            Status = status;
+            CreatedAt = createdAt;
+            ProcessedAt = processedAt;
+        }
     }
 }
