@@ -1,7 +1,7 @@
 ﻿namespace HappyBooking_Ya.Data
 {
     /// <summary>
-    /// Интерфейс репозиотрия
+    /// Интерфейс репозитория событий
     /// </summary>
     public interface IEventRepository
     {
