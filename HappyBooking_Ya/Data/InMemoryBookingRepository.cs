@@ -14,10 +14,11 @@
         /// Реализация метода получения бронирования по id
         /// </summary>
         /// <param name="id">Id бронирования</param>
-        /// <returns> Экземпляр класса бронирования </returns>
-        public Booking? GetBookingById(Guid id)
+        /// <returns> Завершенная задача с кземпляром класса бронирования </returns>
+        public Task<Booking?> GetBookingById(Guid id)
         {
-            return repoInMemory.FirstOrDefault(r => r.Id == id);
+            var BookingFound = repoInMemory.FirstOrDefault(r => r.Id == id);
+            return Task.FromResult(BookingFound);
         }
 
         /// <summary>
@@ -45,8 +46,8 @@
         /// Реализация метода создания бронирования
         /// </summary>
         /// <param name="eventId"> Идентификатор события для бронирования </param>
-        /// <returns> Экземпляр класса бронирования </returns>
-        public Booking CreateBooking(Guid eventId)
+        /// <returns> Завершенная задача с экземпляром класса бронирования </returns>
+        public Task<Booking> CreateBooking(Guid eventId)
         {
             var newBooking = new Booking(
                 Guid.NewGuid(),
@@ -56,7 +57,7 @@
                 DateTime.MinValue
                 );
 
-            return newBooking;
+            return Task.FromResult(newBooking);
         }
 
             /// <summary>

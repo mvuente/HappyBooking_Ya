@@ -9,8 +9,8 @@
         /// Метод получения бронирования по id
         /// </summary>
         /// <param name="id">Id события</param>
-        /// <returns> Экземпляр класса бронирования </returns>
-        public Booking? GetBookingById(Guid id);
+        /// <returns> Завершенная задача с кземпляром класса бронирования </returns>
+        public Task<Booking?> GetBookingById(Guid id);
 
         /// <summary>
         /// Метод получения массива всех бронирований
@@ -22,8 +22,8 @@
         /// Создание бронирования
         /// </summary>
         /// <param name="EventId"> Идентификатор события для бронирования </param>
-        /// <returns> Экземпляр класса бронирования </returns>
-        public Booking CreateBooking(Guid EventId);
+        /// <returns> Завершенная задача с экземпляром класса бронирования </returns>
+        public Task<Booking> CreateBooking(Guid EventId);
 
         /// <summary>
         /// Сохранение изменений в репозитории
