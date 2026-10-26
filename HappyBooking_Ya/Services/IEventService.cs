@@ -1,7 +1,7 @@
 ﻿namespace HappyBooking_Ya.Services
 {
     /// <summary>
-    /// Интерфейс сервиса приложения
+    /// Интерфейс сервиса обработки событий
     /// </summary>
     public interface IEventService
     {
