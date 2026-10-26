@@ -85,6 +85,7 @@ namespace HappyBooking_Ya.UnitTest.Services
             End1 = DateTime.UtcNow.AddDays(3);
             End2 = DateTime.UtcNow.AddDays(4);
             End3 = DateTime.UtcNow.AddDays(6); 
+            EventId1 = Guid.NewGuid();
 
             Events = new List<Event>
                 {

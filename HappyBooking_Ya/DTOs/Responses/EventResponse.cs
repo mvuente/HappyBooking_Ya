@@ -9,7 +9,7 @@
     /// <param name="StartAt"> Дата начала события </param>
     /// <param name="EndAt"> Дата конца события </param>
     public record EventResponse(
-        int Id,       
+        Guid Id,       
         string Title,        
         string Description,
         DateTime StartAt,

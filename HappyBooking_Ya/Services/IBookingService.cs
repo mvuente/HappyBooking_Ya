@@ -17,6 +17,6 @@
         /// </summary>
         /// <param name="eventId"> идентификатор события </param>
         /// <returns> экземпляр созданного класса брони </returns>
-        public Booking CreateBookingAsync(Guid eventId);
+        public Task<Booking> CreateBookingAsync(Guid eventId);
     }
 }

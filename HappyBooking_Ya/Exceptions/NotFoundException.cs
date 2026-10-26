@@ -13,14 +13,14 @@
         /// <summary>
         /// Id ресурса
         /// </summary>
-        public int ResourceId { get; }
+        public Guid ResourceId { get; }
 
         /// <summary>
         /// Констурктор класса
         /// </summary>
         /// <param name="resourceType"> Тип ресурса </param>
         /// <param name="resourceId"> Id ресурса </param>
-        public NotFoundException(string resourceType, int resourceId)
+        public NotFoundException(string resourceType, Guid resourceId)
             : base($"{resourceType} с ID {resourceId} не найден")
         {
             ResourceType = resourceType;

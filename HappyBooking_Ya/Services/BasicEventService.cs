@@ -24,7 +24,7 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <returns> Неизменяемый экземпляр события с заданным id </returns>
-        public EventResponse GetEvent(int id)
+        public EventResponse GetEvent(Guid id)
         {
             var EventFound = eventRepository.GetEventById(id);
 
@@ -79,7 +79,7 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <returns> численный результат операции </returns>
-        public int DeleteEvent(int id)
+        public int DeleteEvent(Guid id)
         {
             var deleteResult = eventRepository.DeleteEvent(id);
 
@@ -106,7 +106,7 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <param name="eventDTO"> экземпляр класса с параметрами события </param>
-        public void ReplaceEvent(int id, EventDTO eventDTO)
+        public void ReplaceEvent(Guid id, EventDTO eventDTO)
         {
             var eventToUpdate = eventRepository.GetEventById(id);
 

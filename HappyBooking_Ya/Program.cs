@@ -21,6 +21,7 @@ builder.Services.AddFluentValidationAutoValidation()       //Подключен 
 
 builder.Services.AddSingleton<IEventService, BasicEventService>(); //Singleton, тк используется коллекция событий in memory
 builder.Services.AddSingleton<IEventRepository, InMemoryEventRepository>();
+builder.Services.AddSingleton<IBookingService, BasicBookingService>(); 
 builder.Services.AddSingleton<IBookingRepository, InMemoryBookingRepository>();
 
 //builder.Services.AddProblemDetails();

@@ -58,7 +58,7 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
         [Produces("application/json")]
         [HttpGet("{id}")]
-        public ActionResult<ApiResult<EventResponse>> Get(int id)
+        public ActionResult<ApiResult<EventResponse>> Get(Guid id)
         {
             var eventFound = _eventService.GetEvent(id);
      
@@ -103,7 +103,7 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status204NoContent)]
         [HttpPut("{id}")]
-        public ActionResult<ApiBaseResult> Put(int id, [FromBody] EventDTO updatedEventDTO)
+        public ActionResult<ApiBaseResult> Put(Guid id, [FromBody] EventDTO updatedEventDTO)
         {
             _eventService.ReplaceEvent(id, updatedEventDTO);
       
@@ -118,7 +118,7 @@
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
-        public ActionResult<ApiBaseResult> Delete(int id)
+        public ActionResult<ApiBaseResult> Delete(Guid id)
         {    
                 _eventService.DeleteEvent(id);
                 return new NoContentResult();       

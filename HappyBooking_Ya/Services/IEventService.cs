@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <returns> Неизменяемый экземпляр события с заданным id </returns>
-        public EventResponse GetEvent(int id);
+        public EventResponse GetEvent(Guid id);
 
         /// <summary>
         /// Объявление метода, выполняющего GET запрос
@@ -40,13 +40,13 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <param name="eventDTO"> экземпляр класса с параметрами события </param>
-        public void ReplaceEvent(int id, EventDTO eventDTO);
+        public void ReplaceEvent(Guid id, EventDTO eventDTO);
 
         /// <summary>
         /// Объявление метода, выполняющего DELETE запрос
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <returns> численный результат операции </returns>
-        public int DeleteEvent(int id);
+        public int DeleteEvent(Guid id);
     }
 }

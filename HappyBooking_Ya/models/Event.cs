@@ -8,9 +8,9 @@ namespace HappyBooking_Ya.models
     public class Event
     {
         /// <summary>
-        /// Идентификатор события. Нумерация начинается с 1
+        /// Идентификатор события.
         /// </summary>
-        public required int Id { get; set; }
+        public required Guid Id { get; set; }
 
         /// <summary>
         /// Заголовок события
@@ -41,7 +41,7 @@ namespace HappyBooking_Ya.models
         /// <param name="startAt"> Дата и время начала события </param>
         /// <param name="endAt"> Дата и время окончания события </param>
         [SetsRequiredMembers]
-        public Event(int id, string title, string description, DateTime startAt, DateTime endAt)
+        public Event(Guid id, string title, string description, DateTime startAt, DateTime endAt)
         {
             Id = id;
             Title = title;

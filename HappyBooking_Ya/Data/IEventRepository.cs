@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="id">Id события</param>
         /// <returns> Экземпляр класса события </returns>
-        public Event? GetEventById(int id);
+        public Event? GetEventById(Guid id);
 
         /// <summary>
         /// Метод получения массива всех событий
@@ -35,6 +35,6 @@
         /// </summary>
         /// <param name="id"> идентификатор события </param>
         /// <returns> численный результат операции </returns>
-        public int DeleteEvent(int id);
+        public int DeleteEvent(Guid id);
     }
 }
