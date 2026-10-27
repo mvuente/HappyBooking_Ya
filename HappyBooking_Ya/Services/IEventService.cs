@@ -48,5 +48,7 @@
         /// <param name="id"> идентификатор события </param>
         /// <returns> численный результат операции </returns>
         public int DeleteEvent(Guid id);
+
+        public Task<BookingResponse> BookEventAsync(Guid id);
     }
 }

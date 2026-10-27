@@ -11,12 +11,19 @@
         private readonly IEventRepository eventRepository;
 
         /// <summary>
+        /// Сервис бронирований
+        /// </summary>
+        private readonly IBookingService bookingService;
+
+        /// <summary>
         /// Конструктор класса
         /// </summary>
         /// <param name="_eventRepository">  Экземпляр репозитория </param>
-        public BasicEventService(IEventRepository _eventRepository)
+        /// <param name="_bookingService">  Экземпляр сервиса бронирований </param>
+        public BasicEventService(IEventRepository _eventRepository, IBookingService _bookingService)
         {
             eventRepository = _eventRepository;
+            bookingService = _bookingService;
         }
 
         /// <summary>
@@ -121,6 +128,25 @@
             eventToUpdate.EndAt = eventDTO.EndAt;
 
             eventRepository.SaveChanges();
+        }
+
+        public async Task<BookingResponse> BookEventAsync(Guid id)
+        {
+            var eventToBook = eventRepository.GetEventById(id);
+
+            if (eventToBook == null)
+            {
+                throw new NotFoundException("событие", id);
+            }
+
+            var createdBooking = await bookingService.CreateBookingAsync(id);
+
+            return new BookingResponse(
+                createdBooking.Id, 
+                createdBooking.EventId, 
+                createdBooking.Status, 
+                createdBooking.CreatedAt, 
+                createdBooking.ProcessedAt);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace HappyBooking_Ya.Controllers
+﻿using Microsoft.Net.Http.Headers;
+
+namespace HappyBooking_Ya.Controllers
 {
     /// <summary>
     /// Класс контроллер приложения
@@ -122,6 +124,34 @@
         {    
                 _eventService.DeleteEvent(id);
                 return new NoContentResult();       
+        }
+
+        /// <summary>
+        /// Метод создает бронирование для события
+        /// </summary>
+        /// <param name="id"> Идентификатор события </param>
+        /// <returns> JSON структура с деталями ответа </returns>
+        [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status202Accepted)]
+        [Produces("application/json")]
+        [HttpPost("{id}/book")]
+        public async Task<ActionResult<ApiResult<BookingResponse>>> BookEventAsync(Guid id)
+        {
+            var createdBooking = await _eventService.BookEventAsync(id);
+            var location = Url.Action(
+                action: nameof(BookEventAsync),
+                values: new { id = createdBooking.Id }
+            ) ?? string.Empty;
+
+            HttpContext.Response.Headers[HeaderNames.Location] = location;
+            
+            return new ObjectResult(new ApiResult<BookingResponse>
+            {
+                Data = createdBooking,
+                Success = true,
+                StatusCode = HttpStatusCode.Accepted,
+                Message = "Создано бронирование для события с заданным id"
+            });
         }
     }
 }

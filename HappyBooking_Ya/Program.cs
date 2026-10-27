@@ -19,12 +19,10 @@ builder.Services.AddFluentValidationAutoValidation()       //Подключен 
                .AddFluentValidationClientsideAdapters()
                .AddValidatorsFromAssembly(typeof(Program).Assembly);
 
-builder.Services.AddSingleton<IEventService, BasicEventService>(); //Singleton, тк используется коллекция событий in memory
-builder.Services.AddSingleton<IEventRepository, InMemoryEventRepository>();
-builder.Services.AddSingleton<IBookingService, BasicBookingService>(); 
 builder.Services.AddSingleton<IBookingRepository, InMemoryBookingRepository>();
-
-//builder.Services.AddProblemDetails();
+builder.Services.AddSingleton<IBookingService, BasicBookingService>();
+builder.Services.AddSingleton<IEventRepository, InMemoryEventRepository>();
+builder.Services.AddSingleton<IEventService, BasicEventService>(); //Singleton, тк используется коллекция событий in memory
 
 var app = builder.Build();
 
