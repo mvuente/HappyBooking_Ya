@@ -6,6 +6,7 @@ using HappyBooking_Ya.models;
 using HappyBooking_Ya.Services;
 using HappyBooking_Ya.Util;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
 
@@ -72,6 +73,27 @@ namespace HappyBooking_Ya.UnitTest.Services
         private DateTime End3;
 
         /// <summary>
+        /// Параметр тестов - идентификатор события
+        /// </summary>
+        private Guid EventId1;
+
+        /// <summary>
+        /// Параметр тестов - идентификатор события
+        /// </summary>
+        private Guid EventId2;
+
+        /// <summary>
+        /// Параметр тестов - идентификатор события
+        /// </summary>
+        private Guid EventId3;
+
+        /// <summary>
+        /// Параметр тестов - идентификатор несуществующего события
+        /// </summary>
+        private Guid UnexistingGuid;
+        
+
+        /// <summary>
         /// Конструктор класса
         /// </summary>
         public EventServiceTest()
@@ -86,20 +108,23 @@ namespace HappyBooking_Ya.UnitTest.Services
             End2 = DateTime.UtcNow.AddDays(4);
             End3 = DateTime.UtcNow.AddDays(6); 
             EventId1 = Guid.NewGuid();
+            EventId2 = Guid.NewGuid();
+            EventId3 = Guid.NewGuid();
+            UnexistingGuid = Guid.NewGuid();
 
             Events = new List<Event>
                 {
-                    new (1,
+                    new (EventId1,
                         "Start",
                         "Первое",
                         Start1,
                         End1),
-                    new (2,
+                    new (EventId2,
                         "Constant",
                         "Второе",
                         Start2,
                         End2),
-                    new (3,
+                    new (EventId3,
                         "Finish",
                         "Последнее",
                         Start3,
@@ -121,11 +146,11 @@ namespace HappyBooking_Ya.UnitTest.Services
         [Fact]
         public void GetEventByIdTest()
         {
-            MockRepository.Setup(method => method.GetEventById(1)).Returns(Events.First());
+            MockRepository.Setup(method => method.GetEventById(EventId1)).Returns(Events.First());
 
-            var result = EventService.GetEvent(1);
+            var result = EventService.GetEvent(EventId1);
 
-            Assert.Equal(1, result.Id);
+            Assert.Equal(EventId1, result.Id);
             Assert.Equal("Start", result.Title);
             Assert.Equal("Первое", result.Description);
             Assert.Equal(Start1, result.StartAt);
@@ -163,7 +188,7 @@ namespace HappyBooking_Ya.UnitTest.Services
                 EndAt = endAt3 };
 
             Event createdEvent = new Event (
-                3,
+                EventId3,
                 "newEvent",
                 "CreatedFromTest",
                 startAt3,
@@ -184,13 +209,13 @@ namespace HappyBooking_Ya.UnitTest.Services
         [Fact]
         public void DeleteEventTest()
         {
-            MockRepository.Setup(method => method.DeleteEvent(1)).Returns(1);
+            MockRepository.Setup(method => method.DeleteEvent(EventId1)).Returns(1);
 
-            var methodResult = EventService.DeleteEvent(1);
+            var methodResult = EventService.DeleteEvent(EventId1);
             var expectedResult = 1;
 
             Assert.Equal(expectedResult, methodResult);
-            MockRepository.Verify(repo => repo.DeleteEvent(1), Times.Once);
+            MockRepository.Verify(repo => repo.DeleteEvent(EventId1), Times.Once);
         }
 
         /// <summary>
@@ -200,16 +225,16 @@ namespace HappyBooking_Ya.UnitTest.Services
         public void ReplaceEventTest()
         {
             Event foundEvent = new Event(
-                2,
+                EventId2,
                 "Constant",
                 "Второе",
                 Start2,
                 End2);
 
-            MockRepository.Setup(method => method.GetEventById(2)).Returns(foundEvent);
-            EventService.ReplaceEvent(2, RequestUpdate);
+            MockRepository.Setup(method => method.GetEventById(EventId2)).Returns(foundEvent);
+            EventService.ReplaceEvent(EventId2, RequestUpdate);
   
-            MockRepository.Verify(repo => repo.GetEventById(2), Times.Once);
+            MockRepository.Verify(repo => repo.GetEventById(EventId2), Times.Once);
             Assert.Equal("updatedEvent", foundEvent.Title);
             Assert.Equal("CreatedFromTest", foundEvent.Description);    
         }
@@ -325,9 +350,9 @@ namespace HappyBooking_Ya.UnitTest.Services
         [Fact]
         public void IncorrectIdExceptionTest()
         {
-            var exception = Assert.Throws<NotFoundException>(() => EventService.GetEvent(5));
+            var exception = Assert.Throws<NotFoundException>(() => EventService.GetEvent(UnexistingGuid));
 
-            Assert.Equal("событие с ID 5 не найден", exception.Message);
+            Assert.Equal($"событие с ID {UnexistingGuid} не найден", exception.Message); 
         }
 
         /// <summary>
@@ -336,9 +361,10 @@ namespace HappyBooking_Ya.UnitTest.Services
         [Fact]
         public void IncorrectIdUpdateExceptionTest()
         {
-            var exception = Assert.Throws<NotFoundException>(() => EventService.ReplaceEvent(5, RequestUpdate));
+            
+            var exception = Assert.Throws<NotFoundException>(() => EventService.ReplaceEvent(UnexistingGuid, RequestUpdate));
 
-            Assert.Equal("событие с ID 5 не найден", exception.Message);
+            Assert.Equal($"событие с ID {UnexistingGuid} не найден", exception.Message);
         }
 
         /// <summary>
@@ -347,9 +373,9 @@ namespace HappyBooking_Ya.UnitTest.Services
         [Fact]
         public void IncorrectIdDeleteExceptionTest()
         {
-            var exception = Assert.Throws<NotFoundException>(() => EventService.DeleteEvent(10));
+            var exception = Assert.Throws<NotFoundException>(() => EventService.DeleteEvent(UnexistingGuid));
 
-            Assert.Equal("событие с ID 10 не найден", exception.Message);
+            Assert.Equal($"событие с ID {UnexistingGuid} не найден", exception.Message);
         }
 
         /// <summary>
