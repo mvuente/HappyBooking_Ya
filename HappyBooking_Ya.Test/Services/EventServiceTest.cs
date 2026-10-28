@@ -28,6 +28,11 @@ namespace HappyBooking_Ya.UnitTest.Services
         private Mock<IEventRepository> MockRepository;
 
         /// <summary>
+        /// Заглушка сервиса
+        /// </summary>
+        private Mock<IBookingService> MockService;
+
+        /// <summary>
         /// Тестируемый экземпляр сервиса
         /// </summary>
         private BasicEventService EventService;
@@ -99,7 +104,8 @@ namespace HappyBooking_Ya.UnitTest.Services
         public EventServiceTest()
         {
             MockRepository = new Mock<IEventRepository>();
-            EventService = new BasicEventService(MockRepository.Object);
+            MockService = new Mock<IBookingService>();
+            EventService = new BasicEventService(MockRepository.Object, MockService.Object);
             Filter = new EventFilter();
             Start1 = DateTime.UtcNow.AddDays(1);
             Start2 = DateTime.UtcNow.AddDays(2);

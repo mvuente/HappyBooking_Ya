@@ -1,9 +1,7 @@
-﻿using Microsoft.Net.Http.Headers;
-
-namespace HappyBooking_Ya.Controllers
+﻿namespace HappyBooking_Ya.Controllers
 {
     /// <summary>
-    /// Класс контроллер приложения
+    /// Класс контроллер обработки событий
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -17,7 +15,7 @@ namespace HappyBooking_Ya.Controllers
         /// <summary>
         /// Конструктор контроллера
         /// </summary>
-        /// <param name="eventService"> Экземпляр класса сервиса приложения </param>
+        /// <param name="eventService"> Экземпляр класса сервиса событий </param>
         public EventsController(IEventService eventService)
         {
             _eventService = eventService;

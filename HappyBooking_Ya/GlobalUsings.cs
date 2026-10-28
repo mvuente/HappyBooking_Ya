@@ -1,6 +1,7 @@
 ﻿global using System.ComponentModel.DataAnnotations;
 global using System.Net;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.Net.Http.Headers;
 global using FluentValidation;
 global using System.Threading.Tasks;
 global using HappyBooking_Ya.Services;
