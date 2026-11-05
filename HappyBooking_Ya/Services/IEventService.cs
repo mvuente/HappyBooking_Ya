@@ -49,6 +49,6 @@
         /// <returns> численный результат операции </returns>
         public int DeleteEvent(Guid id);
 
-        public Task<BookingResponse> BookEventAsync(Guid id);
+        public Task<BookingResponse> BookEventAsync(Guid id, CancellationToken ct);
     }
 }

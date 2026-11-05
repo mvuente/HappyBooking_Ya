@@ -133,9 +133,9 @@
         [ProducesResponseType(typeof(ApiBaseResult), StatusCodes.Status202Accepted)]
         [Produces("application/json")]
         [HttpPost("{id}/book")]
-        public async Task<ActionResult<ApiResult<BookingResponse>>> BookEventAsync(Guid id)
+        public async Task<ActionResult<ApiResult<BookingResponse>>> BookEventAsync(Guid id, CancellationToken ct)
         {
-            var createdBooking = await _eventService.BookEventAsync(id);
+            var createdBooking = await _eventService.BookEventAsync(id, ct);
             var location = Url.Action(
                 action: nameof(BookEventAsync),
                 values: new { id = createdBooking.Id }

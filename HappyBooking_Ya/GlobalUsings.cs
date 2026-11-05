@@ -4,6 +4,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Net.Http.Headers;
 global using FluentValidation;
 global using System.Threading.Tasks;
+global using Microsoft.Extensions.Hosting;
 global using HappyBooking_Ya.Services;
 global using HappyBooking_Ya.Data;
 global using HappyBooking_Ya.models;

@@ -23,6 +23,7 @@ builder.Services.AddSingleton<IBookingRepository, InMemoryBookingRepository>();
 builder.Services.AddSingleton<IBookingService, BasicBookingService>();
 builder.Services.AddSingleton<IEventRepository, InMemoryEventRepository>();
 builder.Services.AddSingleton<IEventService, BasicEventService>(); //Singleton, тк используется коллекция событий in memory
+builder.Services.AddHostedService<BookingProcessor>();
 
 var app = builder.Build();
 

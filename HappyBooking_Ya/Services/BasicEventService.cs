@@ -130,8 +130,10 @@
             eventRepository.SaveChanges();
         }
 
-        public async Task<BookingResponse> BookEventAsync(Guid id)
+        public async Task<BookingResponse> BookEventAsync(Guid id, CancellationToken ct)
         {
+            ct.ThrowIfCancellationRequested();
+
             var eventToBook = eventRepository.GetEventById(id);
 
             if (eventToBook == null)
