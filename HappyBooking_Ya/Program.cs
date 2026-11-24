@@ -1,5 +1,6 @@
 
 using FluentValidation.AspNetCore;
+using HappyBooking_Ya.Workers;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,7 @@ builder.Services.AddSingleton<IBookingRepository, InMemoryBookingRepository>();
 builder.Services.AddSingleton<IBookingService, BasicBookingService>();
 builder.Services.AddSingleton<IEventRepository, InMemoryEventRepository>();
 builder.Services.AddSingleton<IEventService, BasicEventService>(); //Singleton, тк используется коллекция событий in memory
+builder.Services.AddSingleton<IBookingQueue, InMemoryBookingQueue>();
 builder.Services.AddHostedService<BookingProcessor>();
 
 var app = builder.Build();

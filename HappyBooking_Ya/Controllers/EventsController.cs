@@ -136,6 +136,9 @@
         public async Task<ActionResult<ApiResult<BookingResponse>>> BookEventAsync(Guid id, CancellationToken ct)
         {
             var createdBooking = await _eventService.BookEventAsync(id, ct);
+
+            //сюда засунуть очередб
+
             var location = Url.Action(
                 action: nameof(BookEventAsync),
                 values: new { id = createdBooking.Id }
